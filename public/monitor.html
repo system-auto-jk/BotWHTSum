@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Usuários - WhatsApp Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .refresh-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #999;
+            font-size: 13px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-detail {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            font-weight: 600;
+            position: relative;
+            flex: none;
+        }
+
+        .tab.active {
+            color: #667eea;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .user-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            background: #f0f0f0;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-card.blocked {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .user-card.in-attendance {
+            border-left-color: #4caf50;
+            background: #e8f5e9;
+        }
+
+        .user-info {
+            margin-bottom: 15px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .user-id {
+            font-size: 12px;
+            color: #999;
+            word-break: break-all;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 13px;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-label {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .status-online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-busy {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-blocked {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-block {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-block:hover {
+            background: #d32f2f;
+        }
+
+        .btn-intervene {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-intervene:hover {
+            background: #1976d2;
+        }
+
+        .btn-reset {
+            background: #ff9800;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #f57c00;
+        }
+
+        .btn-contact {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-contact:hover {
+            background: #388e3c;
+        }
+
+        .btn-unblock {
+            background: #4caf50;
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-buttons button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .no-users {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .action-history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-action {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .history-detail {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .menu-distribution {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .menu-item {
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .menu-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .menu-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div class="logo">👥</div>
+                <h1>Monitor de Usuários Online</h1>
+            </div>
+            <button class="refresh-btn" onclick="refreshData()">🔄 Atualizar</button>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- STATISTICS CARDS -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Online</h3>
+                <div class="stat-value" id="totalOnline">0</div>
+                <div class="stat-detail">usuários conectados</div>
+            </div>
+            <div class="stat-card">
+                <h3>Em Atendimento</h3>
+                <div class="stat-value" id="inAttendance">0</div>
+                <div class="stat-detail">com atendentes</div>
+            </div>
+            <div class="stat-card">
+                <h3>Bloqueados</h3>
+                <div class="stat-value" id="blockedCount">0</div>
+                <div class="stat-detail">usuários</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Ações</h3>
+                <div class="stat-value" id="totalActions">0</div>
+                <div class="stat-detail">realizadas</div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('users')">👤 Usuários Online</button>
+                <button class="tab" onclick="switchTab('menu-distribution')">📊 Distribuição por Menu</button>
+                <button class="tab" onclick="switchTab('actions')">⚡ Histórico de Ações</button>
+            </div>
+
+            <!-- USERS TAB -->
+            <div id="users" class="tab-content active">
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar por nome ou ID..." onkeyup="filterUsers()">
+                <div class="users-grid" id="usersList">
+                    <div class="no-users">Nenhum usuário online</div>
+                </div>
+            </div>
+
+            <!-- MENU DISTRIBUTION TAB -->
+            <div id="menu-distribution" class="tab-content">
+                <div class="menu-distribution" id="menuDistribution">
+                    <div class="no-users">Carregando...</div>
+                </div>
+            </div>
+
+            <!-- ACTIONS TAB -->
+            <div id="actions" class="tab-content">
+                <div class="action-history-list" id="actionHistory">
+                    <div class="no-users">Nenhuma ação registrada</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONTATO -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <h2>Enviar Mensagem Direta</h2>
+            <div class="form-group">
+                <label>Usuário:</label>
+                <input type="text" id="contactUserName" readonly style="background: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Sua Mensagem:</label>
+                <textarea id="contactMessage" placeholder="Digite a mensagem para enviar ao usuário"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeContactModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="sendContact()">Enviar Mensagem</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE BLOQUEIO -->
+    <div id="blockModal" class="modal">
+        <div class="modal-content">
+            <h2>Bloquear Usuário</h2>
+            <div class="form-group">
+                <label>Usuário:</label>
+                <input type="text" id="blockUserName" readonly style="background: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Motivo (opcional):</label>
+                <input type="text" id="blockReason" placeholder="Ex: Spam, Comportamento inadequado">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeBlockModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmBlock()">Bloquear</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentUsers = [];
+        let stats = {};
+        let selectedUserForAction = null;
+
+        async function refreshData() {
+            await loadOnlineUsers();
+            await loadStatistics();
+            await loadActionHistory();
+        }
+
+        async function loadOnlineUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/online-users`);
+                const data = await response.json();
+                currentUsers = data.users || [];
+                renderUsers(currentUsers);
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/statistics`);
+                const data = await response.json();
+                stats = data.stats || {};
+
+                document.getElementById('totalOnline').textContent = stats.totalOnline || 0;
+                document.getElementById('inAttendance').textContent = stats.inAttendance || 0;
+                document.getElementById('blockedCount').textContent = stats.blocked || 0;
+                document.getElementById('totalActions').textContent = stats.totalActions || 0;
+
+                renderMenuDistribution();
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        async function loadActionHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/action-history?limit=20`);
+                const data = await response.json();
+                renderActionHistory(data.history || []);
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+            }
+        }
+
+        function renderUsers(users) {
+            const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = '<div class="no-users">Nenhum usuário online</div>';
+                return;
+            }
+
+            usersList.innerHTML = users.map(user => `
+                <div class="user-card ${user.isBlocked ? 'blocked' : ''} ${user.isInAttendance ? 'in-attendance' : ''}">
+                    <div class="user-info">
+                        <div class="user-name">👤 ${user.name}</div>
+                        <div class="user-id">${user.jid}</div>
+                        <div style="margin-top: 8px;">
+                            ${user.isBlocked ? '<span class="status-badge status-blocked">🚫 BLOQUEADO</span>' : ''}
+                            ${user.isInAttendance ? '<span class="status-badge status-online">💚 Em Atendimento</span>' : '<span class="status-badge status-online">🟢 Online</span>'}
+                        </div>
+                    </div>
+
+                    <div class="user-details">
+                        <div class="detail-row">
+                            <span class="detail-label">📍 Menu Atual:</span>
+                            <span class="detail-value">${user.currentStep}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">💬 Mensagens Recebidas:</span>
+                            <span class="detail-value">${user.messagesReceived}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">⏱️ Última Atividade:</span>
+                            <span class="detail-value">${formatTime(user.lastActivity)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">⏳ Duração da Sessão:</span>
+                            <span class="detail-value">${formatDuration(user.sessionDuration)}</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        ${user.isBlocked ? 
+                            `<button class="btn btn-contact" onclick="unblockUser('${user.jid}')">✅ Desbloquear</button>` :
+                            `<button class="btn btn-block" onclick="openBlockModal('${user.jid}', '${user.name}')">🚫 Bloquear</button>`
+                        }
+                        <button class="btn btn-intervene" onclick="interveneUser('${user.jid}', '${user.name}')">👥 Intervir</button>
+                        <button class="btn btn-reset" onclick="resetSession('${user.jid}')">🔄 Resetar</button>
+                        <button class="btn btn-contact" onclick="openContactModal('${user.jid}', '${user.name}')">📞 Contato</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMenuDistribution() {
+            const menuDist = document.getElementById('menuDistribution');
+            const byMenu = stats.byMenu || {};
+
+            if (Object.keys(byMenu).length === 0) {
+                menuDist.innerHTML = '<div class="no-users">Nenhum usuário</div>';
+                return;
+            }
+
+            menuDist.innerHTML = Object.entries(byMenu).map(([menu, count]) => `
+                <div class="menu-item">
+                    <div class="menu-name">📍 ${getMenuLabel(menu)}</div>
+                    <div class="menu-count">${count}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderActionHistory(actions) {
+            const actionHistory = document.getElementById('actionHistory');
+            
+            if (actions.length === 0) {
+                actionHistory.innerHTML = '<div class="no-users">Nenhuma ação registrada</div>';
+                return;
+            }
+
+            actionHistory.innerHTML = actions.reverse().map(action => `
+                <div class="history-item">
+                    <div class="history-action">
+                        ${getActionEmoji(action.action)} ${action.action.toUpperCase()} - ${action.userId.substring(0, 15)}...
+                    </div>
+                    <div class="history-detail">
+                        Por: ${action.performedBy} | ${formatTime(action.timestamp)}
+                    </div>
+                    <div class="history-detail">
+                        ${action.reason || 'Sem motivo especificado'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterUsers() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const filtered = currentUsers.filter(u => 
+                u.name.toLowerCase().includes(search) || 
+                u.jid.toLowerCase().includes(search)
+            );
+            renderUsers(filtered);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // MODAL FUNCTIONS
+        function openContactModal(jid, name) {
+            selectedUserForAction = jid;
+            document.getElementById('contactUserName').value = name;
+            document.getElementById('contactMessage').value = '';
+            document.getElementById('contactModal').classList.add('show');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('show');
+        }
+
+        async function sendContact() {
+            const message = document.getElementById('contactMessage').value;
+            if (!message.trim()) {
+                showAlert('Digite uma mensagem', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/contact-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedUserForAction,
+                        adminId: 'admin123',
+                        adminName: 'Administrador',
+                        message
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Mensagem enviada com sucesso', 'success');
+                    closeContactModal();
+                    loadActionHistory();
+                }
+            } catch (error) {
+                showAlert('Erro ao enviar mensagem', 'error');
+            }
+        }
+
+        function openBlockModal(jid, name) {
+            selectedUserForAction = jid;
+            document.getElementById('blockUserName').value = name;
+            document.getElementById('blockReason').value = '';
+            document.getElementById('blockModal').classList.add('show');
+        }
+
+        function closeBlockModal() {
+            document.getElementById('blockModal').classList.remove('show');
+        }
+
+        async function confirmBlock() {
+            const reason = document.getElementById('blockReason').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/block-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedUserForAction,
+                        adminId: 'admin123',
+                        reason: reason || undefined
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Usuário bloqueado', 'success');
+                    closeBlockModal();
+                    loadOnlineUsers();
+                    loadActionHistory();
+                }
+            } catch (error) {
+                showAlert('Erro ao bloquear usuário', 'error');
+            }
+        }
+
+        async function unblockUser(jid) {
+            if (!confirm('Desbloquear este usuário?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/unblock-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid,
+                        adminId: 'admin123'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Usuário desbloqueado', 'success');
+                    loadOnlineUsers();
+                    loadActionHistory();
+                }
+            } catch (error) {
+                showAlert('Erro ao desbloquear', 'error');
+            }
+        }
+
+        async function interveneUser(jid, name) {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/intervene-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid,
+                        adminId: 'admin123',
+                        adminName: 'Administrador'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Intervenção iniciada', 'success');
+                    loadActionHistory();
+                }
+            } catch (error) {
+                showAlert('Erro ao intervir', 'error');
+            }
+        }
+
+        async function resetSession(jid) {
+            if (!confirm('Resetar a sessão deste usuário?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/reset-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid,
+                        adminId: 'admin123'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Sessão resetada', 'success');
+                    loadOnlineUsers();
+                    loadActionHistory();
+                }
+            } catch (error) {
+                showAlert('Erro ao resetar sessão', 'error');
+            }
+        }
+
+        // UTILITY FUNCTIONS
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDuration(ms) {
+            const seconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+
+            if (hours > 0) return `${hours}h ${minutes % 60}m`;
+            if (minutes > 0) return `${minutes}m`;
+            return `${seconds}s`;
+        }
+
+        function getMenuLabel(menuId) {
+            const labels = {
+                'main': '📌 Menu Principal',
+                'services': '🚀 Serviços',
+                'pricing': '💰 Preços',
+                'faq': '❓ FAQ',
+                'contact': '📞 Contato',
+                'registration': '📝 Registro',
+                'attendance': '👤 Atendimento'
+            };
+            return labels[menuId] || menuId;
+        }
+
+        function getActionEmoji(action) {
+            const emojis = {
+                'block': '🚫',
+                'intervene': '👥',
+                'reset': '🔄',
+                'contact': '📞',
+                'kick': '❌'
+            };
+            return emojis[action] || '⚡';
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 3000);
+        }
+
+        // Initialize
+        refreshData();
+        setInterval(refreshData, 10000); // Atualizar a cada 10 segundos
+    </script>
+</body>
+</html>

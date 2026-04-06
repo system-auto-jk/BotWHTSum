@@ -1,0 +1,3985 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Gerenciador Digital</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #155e75;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --info: #0284c7;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --border: #dbe4ee;
+            --shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 18px 40px rgba(15, 23, 42, 0.12);
+            --shadow-lg: 0 30px 70px rgba(15, 23, 42, 0.2);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at 5% 0%, rgba(2, 132, 199, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 90% 10%, rgba(15, 118, 110, 0.12) 0%, transparent 40%),
+                linear-gradient(135deg, #f8fafc 0%, #eef6f6 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            transition: background 0.3s ease;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-section {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            color: var(--dark);
+        }
+
+        .logo-text p {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 16px 0;
+        }
+
+        .nav-group {
+            margin-bottom: 8px;
+        }
+
+        .nav-group-label {
+            padding: 12px 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            margin: 0 8px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item i {
+            width: 20px;
+            font-size: 16px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--dark);
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .quick-search {
+            position: relative;
+            min-width: 280px;
+        }
+
+        .quick-search input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .quick-search input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+        }
+
+        .quick-search i {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+        }
+
+        .status-dot.offline {
+            background: var(--danger);
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: var(--light);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: #e9ecef;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .tab-navigation {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #1976d2;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* MODALS */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+        }
+
+        .modal-close:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* FORMS */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* TABLES */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        thead {
+            background: var(--light);
+            border-bottom: 2px solid var(--border);
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        tbody tr:hover {
+            background: var(--light);
+        }
+
+        /* LISTS */
+        .list-container {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .list-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .list-item:hover {
+            background: var(--light);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .item-detail {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ALERTS */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-danger {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border-left: 4px solid var(--danger);
+        }
+
+        .alert-warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: #e65100;
+            border-left: 4px solid var(--warning);
+        }
+
+        .alert-info {
+            background: rgba(33, 150, 243, 0.1);
+            color: #1565c0;
+            border-left: 4px solid var(--info);
+        }
+
+        .alert i {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .main-content {
+                margin-left: 200px;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+
+            .page-title {
+                font-size: 20px;
+            }
+
+            .quick-search {
+                min-width: 220px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .topbar {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .topbar-right {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .quick-search {
+                min-width: 100%;
+                order: 1;
+            }
+
+            .tab-navigation {
+                gap: 8px;
+            }
+
+            .tab-button {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .modal-content {
+                width: 98%;
+                max-height: 95vh;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 16px;
+            }
+        }
+
+        /* Cadastros WhatsApp */
+        .registrations-section {
+            display: none;
+        }
+
+        .registrations-section.active {
+            display: block;
+        }
+
+        .registration-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .registration-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .registration-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .registration-user {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .registration-plan {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .registration-details {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .registration-timestamp {
+            font-size: 11px;
+            color: #999;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .registration-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .registration-status.pending {
+            background: rgba(255, 152, 0, 0.1);
+            color: #e65100;
+        }
+
+        .registration-status.approved {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+        }
+
+        .registration-status.rejected {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+        }
+
+        .registration-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* Moda Grande Para Detalhes */
+        .modal-content.large {
+            max-width: 700px;
+        }
+
+        .modal-content.xlarge {
+            max-width: 900px;
+        }
+
+        /* Carregamento */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-primary {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .attendance-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .attendance-kpis {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .attendance-kpi {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .attendance-kpi .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.1;
+        }
+
+        .attendance-kpi .label {
+            font-size: 12px;
+            color: #7b8794;
+            margin-top: 6px;
+        }
+
+        .attendance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr 1fr;
+            gap: 18px;
+        }
+
+        .attendance-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .attendance-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        }
+
+        .attendance-panel-body {
+            padding: 10px;
+            max-height: 470px;
+            overflow-y: auto;
+        }
+
+        .attendance-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .attendance-card:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+            transform: translateY(-1px);
+        }
+
+        .attendance-card-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+
+        .attendance-card-meta {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .attendance-card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            margin-right: 6px;
+        }
+
+        .dot.online { background: #22c55e; }
+        .dot.busy { background: #f59e0b; }
+        .dot.offline { background: #94a3b8; }
+
+        @media (max-width: 1200px) {
+            .attendance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .attendance-kpis {
+                grid-template-columns: repeat(2, minmax(120px, 1fr));
+            }
+        }
+    </style>
+    
+    <!-- CSS Moderno para Cadastros -->
+    <link rel="stylesheet" href="registrations-modern.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>WBot Manager</h1>
+                    <p>Admin Panel</p>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-group">
+                    <div class="nav-group-label">Menu Principal</div>
+                    <div class="nav-item active" data-section="dashboard">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </div>
+                    <div class="nav-item" data-section="menus">
+                        <i class="fas fa-list"></i>
+                        <span>Menus</span>
+                    </div>
+                    <div class="nav-item" data-section="registrations">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Cadastros</span>
+                    </div>
+                    <div class="nav-item" data-section="attendance">
+                        <i class="fas fa-headset"></i>
+                        <span>Atendimento</span>
+                    </div>
+                    <div class="nav-item" data-section="users">
+                        <i class="fas fa-users"></i>
+                        <span>Usuários</span>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-label">Gerenciamento</div>
+                    <div class="nav-item" data-section="blocked-users">
+                        <i class="fas fa-ban"></i>
+                        <span>Bloqueados</span>
+                    </div>
+                    <div class="nav-item" data-section="messages">
+                        <i class="fas fa-envelope"></i>
+                        <span>Mensagens</span>
+                    </div>
+                    <div class="nav-item" data-section="monitor">
+                        <i class="fas fa-eye"></i>
+                        <span>Monitor</span>
+                    </div>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-label">Sistema</div>
+                    <div class="nav-item" data-section="bot-control">
+                        <i class="fas fa-robot"></i>
+                        <span>Controle do Bot</span>
+                    </div>
+                    <div class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Configurações</span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a class="btn btn-info" style="width: 100%; justify-content: center;" href="/admin.html">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Abrir Painel Backup</span>
+                </a>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </button>
+                <div style="font-size: 11px; color: #999; text-align: center;">
+                    v 2.0.0 - 2025
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <div>
+                        <div class="page-title">Dashboard</div>
+                        <div class="page-subtitle">Bem-vindo ao painel administrativo</div>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="quick-search">
+                        <i class="fas fa-search"></i>
+                        <input id="globalSearch" type="text" placeholder="Buscar na seção atual (Ctrl+K)">
+                    </div>
+                    <div class="status-indicator">
+                        <div class="status-dot online" id="botStatus"></div>
+                        <span id="connectionStatusText">Conectado</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar">A</div>
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 13px; font-weight: 600;">Admin</span>
+                            <span style="font-size: 11px; color: #999;">Administrador</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="content-area">
+                <div id="alertContainer"></div>
+
+                <!-- DASHBOARD SECTION -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="cards-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">U</div>
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Usuários Conectados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">M</div>
+                            <div class="stat-value" id="totalMenus">0</div>
+                            <div class="stat-label">Menus Criados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">C</div>
+                            <div class="stat-value" id="pendingRegistrations">0</div>
+                            <div class="stat-label">Cadastros Pendentes</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">S</div>
+                            <div class="stat-value" id="activeSessions">0</div>
+                            <div class="stat-label">Sessões Ativas</div>
+                        </div>
+                    </div>
+
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 24px;">
+                        <h3 style="margin-bottom: 20px; font-size: 16px; font-weight: 700;">Atividades Recentes</h3>
+                        <div id="recentActivities" style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="text-align: center; padding: 40px 20px; color: #999;">
+                                Carregando atividades...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 24px;">
+                        <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 16px; font-size: 16px; font-weight: 700;">Leitura Operacional</h3>
+                            <div id="dashboardInsights" style="display: grid; gap: 12px;">
+                                <div style="text-align: center; padding: 24px 20px; color: #999;">Carregando leitura da operacao...</div>
+                            </div>
+                        </div>
+                        <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 16px; font-size: 16px; font-weight: 700;">Saude do Sistema</h3>
+                            <div id="dashboardHealth" style="display: grid; gap: 10px;">
+                                <div style="text-align: center; padding: 24px 20px; color: #999;">Carregando indicadores...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MENUS SECTION -->
+                <div id="menus" class="tab-content">
+                    <div style="margin-bottom: 24px;">
+                        <h2 style="margin-bottom: 16px; font-size: 20px; font-weight: 700;">Gerenciar Menus</h2>
+                        <button class="btn btn-primary" onclick="openMenuModal()">
+                            <i class="fas fa-plus"></i> Novo Menu
+                        </button>
+                    </div>
+                    <div id="menusList" class="list-container"></div>
+                </div>
+
+                <!-- REGISTRATIONS SECTION -->
+                <div id="registrations" class="tab-content">
+                    <div style="margin-bottom: 24px;">
+                        <h2 style="margin-bottom: 16px; font-size: 20px; font-weight: 700;">Cadastros via WhatsApp</h2>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="openRegistrationCreateModal()">
+                                <i class="fas fa-plus"></i> Novo Cadastro
+                            </button>
+                            <button class="btn btn-secondary" onclick="filterRegistrations('all')">Todos</button>
+                            <button class="btn btn-secondary" onclick="filterRegistrations('pending')">Pendentes</button>
+                            <button class="btn btn-secondary" onclick="filterRegistrations('approved')">Aprovados</button>
+                            <button class="btn btn-secondary" onclick="filterRegistrations('rejected')">Rejeitados</button>
+                        </div>
+                    </div>
+                    <div id="registrationsList" class="registrations-section active"></div>
+                </div>
+
+                <!-- ATTENDANCE SECTION -->
+                <div id="attendance" class="tab-content">
+                    <div class="attendance-toolbar">
+                        <h2 style="font-size: 20px; font-weight: 700;">Atendimento Inteligente</h2>
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="toggleAttendanceAutoRefresh()">
+                                <i class="fas fa-bolt"></i> <span id="attendanceAutoLabel">Auto: ON</span>
+                            </button>
+                            <button class="btn btn-info" onclick="refreshAttendanceData()">
+                                <i class="fas fa-rotate"></i> Atualizar
+                            </button>
+                            <button class="btn btn-primary" onclick="openAddAttendantModal()">
+                                <i class="fas fa-plus"></i> Novo Atendente
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: end;">
+                            <div style="min-width: 240px;">
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Capacidade padrão por atendente</label>
+                                <input type="number" id="defaultMaxConcurrentChats" min="1" step="1" value="1"
+                                       style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px;">
+                            </div>
+                            <label style="display:flex; gap:8px; align-items:center; margin-bottom: 10px; font-size: 13px; color: #374151;">
+                                <input type="checkbox" id="applyDefaultCapacityToAllAttendants" checked>
+                                Aplicar a todos os atendentes agora (sempre ativo ao salvar)
+                            </label>
+                            <button class="btn btn-primary" onclick="saveAttendanceConcurrencySettings()">
+                                <i class="fas fa-save"></i> Salvar capacidade
+                            </button>
+                        </div>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                            Recomendado iniciar com <strong>1</strong>. Se um novo cliente entrar e todos os atendentes estiverem no limite, ele vai para a fila automaticamente.
+                        </div>
+                    </div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 12px; margin-bottom: 10px;">
+                            <strong style="font-size: 14px;">Textos dinamicos para cliente (fila)</strong>
+                            <button class="btn btn-primary btn-sm" onclick="saveAttendanceMessageSettings()">
+                                <i class="fas fa-save"></i> Salvar textos
+                            </button>
+                        </div>
+                        <div style="display:grid; gap:10px;">
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem de entrada na fila</label>
+                                <textarea id="attendanceMsgQueueEntry" rows="4" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem quando for o proximo</label>
+                                <input id="attendanceMsgQueueNext" type="text" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem de atualizacao da fila</label>
+                                <textarea id="attendanceMsgQueueUpdate" rows="2" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem quando cliente falar enquanto aguarda</label>
+                                <textarea id="attendanceMsgQueueStatus" rows="4" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                            Variaveis suportadas: <code>{position}</code>, <code>{remaining}</code>, <code>{estimatedMinutes}</code>, <code>{avgMinutes}</code>, <code>{positionMessage}</code>.
+                        </div>
+                    </div>
+
+                    <div class="attendance-kpis">
+                        <div class="attendance-kpi">
+                            <div class="value" id="kpiAttendantsOnline">0</div>
+                            <div class="label">Atendentes Online</div>
+                        </div>
+                        <div class="attendance-kpi">
+                            <div class="value" id="kpiAttendantsBusy">0</div>
+                            <div class="label">Atendentes Ocupados</div>
+                        </div>
+                        <div class="attendance-kpi">
+                            <div class="value" id="kpiSessions">0</div>
+                            <div class="label">Sessões Ativas</div>
+                        </div>
+                        <div class="attendance-kpi">
+                            <div class="value" id="kpiQueue">0</div>
+                            <div class="label">Fila de Espera</div>
+                        </div>
+                    </div>
+
+                    <div class="attendance-grid">
+                        <div class="attendance-panel">
+                            <div class="attendance-panel-header">
+                                <strong>Atendentes</strong>
+                                <span class="badge badge-primary" id="attendantsCountBadge">0 cadastrados</span>
+                            </div>
+                            <div id="attendantsList" class="attendance-panel-body"></div>
+                        </div>
+
+                        <div class="attendance-panel">
+                            <div class="attendance-panel-header">
+                                <strong>Sessões Ativas</strong>
+                                <span class="badge badge-success" id="sessionsCountBadge">0 sessões</span>
+                            </div>
+                            <div id="sessionsList" class="attendance-panel-body"></div>
+                        </div>
+
+                        <div class="attendance-panel">
+                            <div class="attendance-panel-header">
+                                <strong>Fila de Espera</strong>
+                                <span class="badge badge-warning" id="queueWaitBadge">0 aguardando</span>
+                            </div>
+                            <div id="queueList" class="attendance-panel-body"></div>
+                        </div>
+
+                        <div class="attendance-panel" style="grid-column: 1 / -1;">
+                            <div class="attendance-panel-header">
+                                <strong>Analise de Conversas</strong>
+                                <span class="badge badge-info" id="conversationAnalyticsBadge">0 analisadas</span>
+                            </div>
+                            <div style="padding: 10px 12px; border-bottom: 1px solid #e5e7eb; display:flex; gap:8px; flex-wrap:wrap;">
+                                <select id="analyticsNatureFilter" style="min-width:180px;">
+                                    <option value="">Todos os tipos</option>
+                                    <option value="duvida">Duvida</option>
+                                    <option value="suporte_tecnico">Suporte tecnico</option>
+                                    <option value="financeiro">Financeiro</option>
+                                    <option value="comercial">Comercial</option>
+                                    <option value="contratacao">Contratacao</option>
+                                    <option value="cancelamento">Cancelamento</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                                <select id="analyticsOutcomeFilter" style="min-width:180px;">
+                                    <option value="">Todos os resultados</option>
+                                    <option value="resolvido">Resolvido</option>
+                                    <option value="parcial">Parcial</option>
+                                    <option value="nao_resolvido">Nao resolvido</option>
+                                    <option value="contratou">Contratou</option>
+                                    <option value="proposta_enviada">Proposta enviada</option>
+                                    <option value="nao_contratou">Nao contratou</option>
+                                </select>
+                                <button class="btn btn-sm btn-primary" onclick="loadConversationAnalytics()"><i class="fas fa-filter"></i> Filtrar</button>
+                            </div>
+                            <div id="conversationAnalyticsList" class="attendance-panel-body"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USERS SECTION -->
+                <div id="users" class="tab-content">
+                    <div style="margin-bottom: 24px;">
+                        <h2 style="margin-bottom: 16px; font-size: 20px; font-weight: 700;">Usuários Conectados</h2>
+                        <input type="text" id="userSearch" placeholder="Buscar usuário..." 
+                               style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); width: 100%; max-width: 300px; font-size: 14px;">
+                    </div>
+                    <div id="usersList" class="list-container"></div>
+                </div>
+
+                <!-- BLOCKED USERS SECTION -->
+                <div id="blocked-users" class="tab-content">
+                    <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700;">Usuários Bloqueados</h2>
+                    <div id="blockedUsersList" class="list-container"></div>
+                </div>
+                <!-- MESSAGES SECTION -->
+                <div id="messages" class="tab-content">
+                    <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700;">Enviar Mensagem</h2>
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                        <form id="messageForm">
+                            <div class="form-group">
+                                <label>Selecionar Usuario</label>
+                                <select id="userSelect" required>
+                                    <option value="">-- Escolha um usuario --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Mensagem</label>
+                                <textarea id="messageText" placeholder="Digite sua mensagem..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Enviar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <!-- MONITOR SECTION -->
+                <div id="monitor" class="tab-content">
+                    <h2 style="margin-bottom: 24px; font-size: 20px; font-weight: 700;">Monitor de Usuários</h2>
+                    <div id="monitorData" style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            Carregando dados...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOT CONTROL SECTION -->
+                <div id="bot-control" class="tab-content">
+                    <div style="display: grid; gap: 24px; grid-template-columns: 1fr;">
+                        <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                            <h2 style="margin-bottom: 16px; font-size: 20px; font-weight: 700;">Controle do Bot</h2>
+                            <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px; border-radius: var(--radius-md); margin-bottom: 20px; display: flex; align-items: center; gap: 16px;">
+                                <div id="botStatusIcon" style="font-size: 32px; font-weight: 800;">ON</div>
+                                <div>
+                                    <div id="botControlStatusText" style="font-size: 22px; font-weight: 800; letter-spacing: 0.5px;">ATIVADO</div>
+                                <div id="botStatusTime" style="font-size: 12px; opacity: 0.9;">Ultima atualizacao: --</div>
+                                </div>
+                            </div>
+
+                            <div class="btn-group" style="margin-bottom: 16px;">
+                                <button class="btn btn-success" onclick="enableBotFromPanel()"><i class="fas fa-play"></i> Ativar Bot</button>
+                                <button class="btn btn-danger" onclick="disableBotFromPanel()"><i class="fas fa-stop"></i> Desativar Bot</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                                    Use os botoes acima para ativar ou desativar as respostas automaticas do bot.
+                                    <br><br>
+                                    ATIVADO: O bot responde normalmente a todos os usuarios.<br>
+                                    DESATIVADO: O bot nao responde a ninguem (modo offline).<br>
+                                    <br>
+                                    Comandos via WhatsApp (apenas administrador): <strong>!startbot</strong> e <strong>!stopbot</strong>.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                            <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">Histórico de Mudanças</h3>
+                            <div id="botHistoryList" class="list-container" style="max-height: 320px; overflow-y: auto;">
+                                <div class="empty-state" style="padding: 30px;"><i class="fas fa-history"></i><h3>Nenhum registro</h3><p>As alterações do estado do bot aparecerão aqui</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- SETTINGS SECTION -->
+                <div id="settings" class="tab-content">
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); max-width: 600px;">
+                        <h2 style="margin-bottom: 24px; font-weight: 700;">Configuracoes do Bot</h2>
+                        <form id="settingsForm">
+                            <div class="form-group">
+                                <label>Nome do Bot</label>
+                                <input type="text" id="botName" placeholder="Ex: Meu Bot">
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo Gemini</label>
+                                <select id="geminiModel">
+                                    <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                                    <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                                    <option value="gemini-pro">Gemini Pro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Contexto do Bot</label>
+                                <textarea id="botContext" placeholder="Defina o comportamento do seu bot..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Chave Gemini API</label>
+                                <input type="password" id="geminiKey" placeholder="Deixe em branco para nao alterar">
+                            </div>
+                            <div style="margin-top: 18px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: #f8fafc;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom: 12px;">
+                                    <div>
+                                        <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Notificacoes operacionais</h3>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                            Escolha o numero que vai receber avisos internos de cadastro concluido e solicitacao de atendente.
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-save"></i> Salvar
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label>Numero de destino das notificacoes</label>
+                                    <input type="text" id="notificationTargetPhone" placeholder="Ex: 5571999999999">
+                                </div>
+                                <div style="display:grid; gap:10px;">
+                                    <label style="display:flex; gap:10px; align-items:flex-start;">
+                                        <input type="checkbox" id="notifyOnRegistration" style="margin-top: 3px;">
+                                        <span>Enviar aviso quando um cadastro for concluido com sucesso</span>
+                                    </label>
+                                    <label style="display:flex; gap:10px; align-items:flex-start;">
+                                        <input type="checkbox" id="notifyOnAttendantRequest" style="margin-top: 3px;">
+                                        <span>Enviar aviso quando um cliente solicitar atendimento humano</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="margin-top: 18px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-md); background: #f8fafc;">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom: 10px;">
+                                    <div>
+                                        <h3 style="margin: 0; font-size: 15px; font-weight: 700;">Numeros administradores</h3>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                            Edite os numeros existentes ou adicione novos. Todos eles poderao usar <strong>!startbot</strong> e <strong>!stopbot</strong>.
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="addAdminPhone()">
+                                            <i class="fas fa-plus"></i> Adicionar numero
+                                        </button>
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-save"></i> Salvar
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="adminPhonesList"></div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar Configuracoes
+                            </button>
+                        </form>
+                    </div>
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-top: 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 10px; margin-bottom: 12px;">
+                            <h2 style="margin:0; font-weight:700;">Mensagens Dinamicas do Bot</h2>
+                            <button class="btn btn-primary btn-sm" onclick="saveGlobalMessageTemplates()">
+                                <i class="fas fa-save"></i> Salvar mensagens
+                            </button>
+                        </div>
+                        <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">
+                            Edite os textos enviados automaticamente ao cliente e ao administrador via WhatsApp.
+                        </div>
+                        <div id="globalMessageTemplatesList" style="display:grid; gap: 10px;"></div>
+                    </div>
+                    <div style="background: white; padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-top: 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap: 10px; margin-bottom: 12px;">
+                            <h2 style="margin:0; font-weight:700;">Mensagens de Fila e Atendimento</h2>
+                            <button class="btn btn-primary btn-sm" onclick="saveAttendanceMessageSettings()">
+                                <i class="fas fa-save"></i> Salvar textos
+                            </button>
+                        </div>
+                        <div style="font-size: 12px; color: #6b7280; margin-bottom: 12px;">
+                            Aqui voce edita exatamente os textos enviados quando todos os atendentes estao ocupados e o cliente entra na fila.
+                        </div>
+                        <div style="display:grid; gap:10px;">
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem de entrada na fila</label>
+                                <textarea id="settingsAttendanceMsgQueueEntry" rows="4" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem quando o cliente for o proximo</label>
+                                <input id="settingsAttendanceMsgQueueNext" type="text" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;">
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem de atualizacao da fila</label>
+                                <textarea id="settingsAttendanceMsgQueueUpdate" rows="2" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display:block; font-size: 12px; color: #6b7280; margin-bottom: 6px;">Mensagem quando o cliente escreve enquanto aguarda</label>
+                                <textarea id="settingsAttendanceMsgQueueStatus" rows="4" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:12px;"></textarea>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 8px;">
+                            Variaveis suportadas: <code>{position}</code>, <code>{remaining}</code>, <code>{estimatedMinutes}</code>, <code>{avgMinutes}</code>, <code>{positionMessage}</code>.
+                        </div>
+                    </div>
+                </div>
+    <!-- MENUS MODAL -->
+    <div id="menuModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="menuModalTitle">Novo Menu</h2>
+                <button class="modal-close" onclick="closeMenuModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="menuForm">
+                    <div class="form-group">
+                        <label>ID do Menu</label>
+                        <input type="text" id="menuId" placeholder="Ex: menu_principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" id="menuTitle" placeholder="Ex: Menu Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensagem</label>
+                        <textarea id="menuMessage" placeholder="Mensagem inicial do menu..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeMenuModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveMenu()">
+                    <i class="fas fa-save"></i> Salvar Menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATTENDANT MODAL -->
+    <div id="attendantModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="attendantModalTitle">Novo Atendente</h2>
+                <button class="modal-close" onclick="closeAttendantModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="attendantForm" onsubmit="saveAttendant(event)">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="attendantName" placeholder="Nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="attendantEmail" placeholder="email@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Login</label>
+                        <input type="text" id="attendantLogin" placeholder="Username para login" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="attendantPassword" placeholder="Senha inicial" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="attendantStatus" required>
+                            <option value="online">Disponível</option>
+                            <option value="busy">Em atendimento</option>
+                            <option value="offline">Offline</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Capacidade simultnea (clientes por vez)</label>
+                        <input type="number" id="attendantMaxConcurrentChats" min="1" step="1" value="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAttendantModal()">Cancelar</button>
+                <button class="btn btn-primary" type="submit" form="attendantForm">
+                    <i class="fas fa-save"></i> Criar Atendente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRANSFER SESSION MODAL -->
+    <div id="transferSessionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Transferir Sessao</h2>
+                <button class="modal-close" onclick="closeTransferSessionModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label id="transferCurrentInfo">Atendente atual:</label>
+                </div>
+                <div class="form-group">
+                    <label>Atendente de destino</label>
+                    <select id="transferAttendantSelect"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTransferSessionModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmTransferSession()">
+                    <i class="fas fa-random"></i> Transferir
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="conversationDetailModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Detalhes da Conversa</h2>
+                <button class="modal-close" onclick="closeConversationDetailModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="conversationDetailHeader" style="font-size:13px; color:#64748b; margin-bottom:8px;"></div>
+                <div id="conversationDetailBody" style="max-height:60vh; overflow:auto; background:#f8fafc; border:1px solid #e5e7eb; border-radius:10px; padding:12px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConversationDetailModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTRATION DETAILS MODAL -->
+    <div id="registrationModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Detalhes do Cadastro</h2>
+                <button class="modal-close" onclick="closeRegistrationModal()">×</button>
+            </div>
+            <div class="modal-body" id="registrationModalBody"></div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRegistrationModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTRATION CREATE/EDIT MODAL -->
+    <div id="registrationFormModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 id="registrationFormTitle">Novo Cadastro</h2>
+                <button class="modal-close" onclick="closeRegistrationFormModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label>Nome do Cliente *</label>
+                        <input type="text" id="regClientName" placeholder="Nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telefone / JID *</label>
+                        <input type="text" id="regClientJid" placeholder="Ex: 5511999999999@s.whatsapp.net ou apenas o número" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="regClientEmail" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone (Contato)</label>
+                            <input type="tel" id="regClientPhone" placeholder="(11) 99999-9999">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>CPF / CNPJ</label>
+                            <input type="text" id="regDocument" placeholder="000.000.000-00">
+                        </div>
+                        <div class="form-group">
+                            <label>Plano</label>
+                            <select id="regPlan">
+                                <option value="basic">Plano Básico</option>
+                                <option value="restaurant">Cardápio Digital</option>
+                                <option value="service">Prestador de Serviço</option>
+                                <option value="custom">Personalizado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <textarea id="regAddress" placeholder="Endereço completo..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Informações Adicionais</label>
+                        <textarea id="regAdditionalInfo" placeholder="Informações extras..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="regStatus">
+                            <option value="pending">Pendente</option>
+                            <option value="approved">Aprovado</option>
+                            <option value="rejected">Rejeitado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRegistrationFormModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveRegistration()">
+                    <i class="fas fa-save"></i> Salvar Cadastro
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.API_BASE || 'http://localhost:3000/api';
+        window.API_BASE = API_BASE;
+        let currentUsers = [];
+        let currentMenus = [];
+        let currentAttendants = [];
+        let currentRegistrations = [];
+        let filteredRegistrations = [];
+        let currentSessions = [];
+        let currentQueue = [];
+        let currentTransferSessionId = null;
+        let attendanceAutoRefresh = true;
+        let attendanceAutoRefreshTimer = null;
+        let currentAdminPhones = [];
+        const LAST_SECTION_STORAGE_KEY = 'admin_modern_last_section';
+
+        // NAVIGATION
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const section = item.dataset.section;
+                navigateTo(section);
+            });
+        });
+
+        const searchInput = document.getElementById('globalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', applyGlobalSearch);
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.ctrlKey && event.key.toLowerCase() === 'k') {
+                event.preventDefault();
+                searchInput?.focus();
+            }
+            if (event.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.value = '';
+                applyGlobalSearch();
+                searchInput.blur();
+            }
+        });
+
+        function navigateTo(section) {
+            if (!document.getElementById(section) || !document.querySelector(`[data-section="${section}"]`)) {
+                section = 'dashboard';
+            }
+
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+            // Update page title
+            const titles = {
+                dashboard: 'Dashboard',
+                menus: 'Gerenciar Menus',
+                registrations: 'Cadastros via WhatsApp',
+                attendance: 'Sistema de Atendimento',
+                users: 'Usuários Conectados',
+                'blocked-users': 'Usuários Bloqueados',
+                messages: 'Enviar Mensagens',
+                monitor: 'Monitor de Usuários',
+                'bot-control': 'Controle do Bot',
+                settings: 'Configurações'
+            };
+
+            document.querySelector('.page-title').textContent = titles[section];
+
+            // Show content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(section).classList.add('active');
+            localStorage.setItem(LAST_SECTION_STORAGE_KEY, section);
+
+            // Refresh timer only while attendance tab is open
+            if (section !== 'attendance' && attendanceAutoRefreshTimer) {
+                clearInterval(attendanceAutoRefreshTimer);
+                attendanceAutoRefreshTimer = null;
+            }
+
+            // Load data
+            loadSectionData(section);
+            applyGlobalSearch();
+        }
+
+        function applyGlobalSearch() {
+            const term = (searchInput?.value || '').trim().toLowerCase();
+            const activeTab = document.querySelector('.tab-content.active');
+            if (!activeTab) return;
+
+            const items = activeTab.querySelectorAll(
+                '.list-item, .registration-card, .stat-card, #recentActivities > div, #monitorList > div, #usersList > div, #blockedUsersList > div, #queueList > div, #sessionsList > div'
+            );
+
+            items.forEach(item => {
+                if (!term) {
+                    item.style.display = '';
+                    return;
+                }
+                const text = (item.textContent || '').toLowerCase();
+                item.style.display = text.includes(term) ? '' : 'none';
+            });
+        }
+
+        function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'menus':
+                    loadMenus();
+                    break;
+                case 'registrations':
+                    loadRegistrations();
+                    break;
+                case 'attendance':
+                    refreshAttendanceData();
+                    if (attendanceAutoRefresh) {
+                        if (attendanceAutoRefreshTimer) clearInterval(attendanceAutoRefreshTimer);
+                        attendanceAutoRefreshTimer = setInterval(refreshAttendanceData, 10000);
+                    }
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'blocked-users':
+                    loadBlockedUsers();
+                    break;
+                case 'messages':
+                    loadUsers();
+                    break;
+                case 'monitor':
+                    loadMonitor();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+                case 'bot-control':
+                    loadBotControl();
+                    break;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const [usersData, menusData, registrationsData, sessionsData] = await Promise.all([
+                    fetch(`${API_BASE}/users`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE}/menus`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE}/registrations`).then(r => r.json()).catch(() => []),
+                    fetch(`${API_BASE}/attendance/sessions`).then(r => r.json()).catch(() => [])
+                ]);
+
+                const users = Array.isArray(usersData) ? usersData : (usersData.users || []);
+                const menus = Array.isArray(menusData) ? menusData : (menusData.menus || []);
+                const registrations = Array.isArray(registrationsData) ? registrationsData : (registrationsData.registrations || []);
+                const sessions = Array.isArray(sessionsData) ? sessionsData : (sessionsData.sessions || []);
+
+                document.getElementById('totalUsers').textContent = users.length || 0;
+                document.getElementById('totalMenus').textContent = menus.length || 0;
+                document.getElementById('pendingRegistrations').textContent = 
+                    (registrations && Array.isArray(registrations)) ? registrations.filter(r => r.status === 'pending').length : 0;
+                document.getElementById('activeSessions').textContent = (sessions && sessions.length) || 0;
+
+                // Load recent activities
+                loadRecentActivities();
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        async function loadRecentActivities() {
+            const activities = [
+                { type: 'user', message: '5 novos usuários conectados', time: '5 minutos atrás', icon: 'U' },
+                { type: 'menu', message: '2 menus foram atualizados', time: '15 minutos atrás', icon: 'M' },
+                { type: 'registration', message: '3 cadastros aguardando aprovação', time: '30 minutos atrás', icon: 'C' }
+            ];
+
+            const container = document.getElementById('recentActivities');
+            container.innerHTML = activities.map(activity => `
+                <div style="display: flex; gap: 12px; padding: 12px; background: var(--light); border-radius: var(--radius-md);">
+                    <div style="font-size: 20px;">${activity.icon}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; font-size: 13px; margin-bottom: 2px;">${activity.message}</div>
+                        <div style="font-size: 11px; color: #999;">${activity.time}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        let currentMenuEditorMeta = {
+            menus: [],
+            references: {},
+            actionTypes: [],
+            registrationPlans: [],
+            attendantTypes: []
+        };
+
+        function getMenuMetaOptions(currentMenuId = '') {
+            const safeMenus = Array.isArray(currentMenuEditorMeta.menus) ? currentMenuEditorMeta.menus : [];
+            return safeMenus.filter(menu => menu.id !== currentMenuId);
+        }
+
+        function getMenuReferenceBadges(menuId) {
+            const refs = currentMenuEditorMeta.references?.[menuId] || [];
+            if (!Array.isArray(refs) || refs.length === 0) {
+                return '<span style="display:inline-flex; padding:4px 8px; border-radius:999px; background:#ecfeff; color:#0f766e; font-size:11px; font-weight:700;">Sem dependencias</span>';
+            }
+
+            return refs.map(ref => `
+                <span style="display:inline-flex; padding:4px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-size:11px; font-weight:700;">
+                    ${ref.menuTitle} -> ${ref.itemLabel}
+                </span>
+            `).join('');
+        }
+
+        function getActionPresentation(action) {
+            const map = {
+                submenu: { label: 'Abrir submenu', color: '#1d4ed8' },
+                message: { label: 'Mensagem fixa', color: '#7c3aed' },
+                registration: { label: 'Iniciar cadastro', color: '#0f766e' },
+                attendant: { label: 'Encaminhar atendente', color: '#b45309' }
+            };
+            return map[action] || { label: action || 'Sem acao', color: '#64748b' };
+        }
+
+        function renderAdminPhones(values = []) {
+            currentAdminPhones = Array.isArray(values) ? [...values] : [];
+            const container = document.getElementById('adminPhonesList');
+            if (!container) return;
+
+            if (currentAdminPhones.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 18px; border: 1px dashed var(--border); border-radius: var(--radius-md);">
+                        <h3>Nenhum numero administrador</h3>
+                        <p>Adicione ao menos um numero para controlar o bot via WhatsApp.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentAdminPhones.map((phone, index) => `
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <input type="text" value="${phone}" data-admin-phone-index="${index}" placeholder="Ex: 5571999999999">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeAdminPhone(${index})">
+                        <i class="fas fa-trash"></i> Remover
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addAdminPhone() {
+            currentAdminPhones.push('');
+            renderAdminPhones(currentAdminPhones);
+        }
+
+        function removeAdminPhone(index) {
+            currentAdminPhones.splice(index, 1);
+            renderAdminPhones(currentAdminPhones);
+        }
+
+        function collectAdminPhones() {
+            return Array.from(document.querySelectorAll('[data-admin-phone-index]'))
+                .map(input => (input.value || '').replace(/\D/g, '').trim())
+                .filter(Boolean);
+        }
+
+        async function loadMenus() {
+            try {
+                const [menusResponse, metaResponse] = await Promise.all([
+                    fetch(`${API_BASE}/menus`),
+                    fetch(`${API_BASE}/menus/meta`)
+                ]);
+
+                const data = await menusResponse.json();
+                const meta = await metaResponse.json().catch(() => ({}));
+                const rawMenus = Array.isArray(data)
+                    ? data
+                    : (Array.isArray(data?.menus) ? data.menus : []);
+
+                currentMenuEditorMeta = meta?.success ? meta : currentMenuEditorMeta;
+
+                currentMenus = rawMenus
+                    .filter(menu => menu && menu.id)
+                    .map(menu => ({
+                        ...menu,
+                        items: Array.isArray(menu.items) ? menu.items : []
+                    }))
+                    .sort((a, b) => (a.title || a.id).localeCompare(b.title || b.id));
+
+                const container = document.getElementById('menusList');
+                if (!currentMenus || currentMenus.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-list"></i><h3>Nenhum menu criado</h3><p>Crie seu primeiro menu para começar</p></div>';
+                    return;
+                }
+
+                container.innerHTML = currentMenus.map(menu => `
+                    <div class="attendance-card" style="margin-bottom: 14px;">
+                        <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start;">
+                            <div style="flex:1; min-width:0;">
+                                <div class="item-name" style="margin-bottom:6px;">${menu.title}</div>
+                                <div class="item-detail" style="margin-bottom:8px;">ID: ${menu.id} • ${menu.items?.length || 0} itens</div>
+                                <div style="font-size:13px; color:#475569; line-height:1.6; margin-bottom:10px;">
+                                    ${menu.message ? menu.message.substring(0, 180) : 'Sem mensagem configurada'}
+                                </div>
+                                <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;">
+                                    ${getMenuReferenceBadges(menu.id)}
+                                </div>
+                                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                                    ${(menu.items || []).slice(0, 4).map(item => {
+                                        const action = getActionPresentation(item.action);
+                                        return `<span style="display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border-radius:999px; background:${action.color}14; color:${action.color}; font-size:11px; font-weight:700;">${item.label}</span>`;
+                                    }).join('')}
+                                    ${(menu.items || []).length > 4 ? `<span style="display:inline-flex; padding:5px 9px; border-radius:999px; background:#f1f5f9; color:#334155; font-size:11px; font-weight:700;">+ ${(menu.items || []).length - 4} itens</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item-actions" style="margin-top:14px;">
+                            <button class="btn btn-sm btn-info" onclick="editMenu('${menu.id}')">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-sm btn-secondary" onclick="duplicateMenu('${menu.id}')">
+                                <i class="fas fa-copy"></i> Duplicar
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteMenu('${menu.id}')">
+                                <i class="fas fa-trash"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar menus:', error);
+                showAlert('Erro ao carregar menus', 'danger');
+            }
+        }
+
+        async function loadRegistrations() {
+            try {
+                const response = await fetch(`${API_BASE}/registrations`).catch(() => ({ json: () => [] }));
+                currentRegistrations = await response.json() || [];
+                filteredRegistrations = currentRegistrations;
+                window.currentRegistrations = currentRegistrations;
+                window.filteredRegistrations = filteredRegistrations;
+                renderRegistrations();
+            } catch (error) {
+                console.error('Erro ao carregar cadastros:', error);
+                currentRegistrations = [];
+                filteredRegistrations = [];
+                window.currentRegistrations = currentRegistrations;
+                window.filteredRegistrations = filteredRegistrations;
+                renderRegistrations();
+            }
+        }
+
+        function renderRegistrations() {
+            const container = document.getElementById('registrationsList');
+            if (filteredRegistrations.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>Nenhum cadastro</h3><p>Os cadastros realizados via WhatsApp aparecerão aqui</p></div>';
+                return;
+            }
+
+            container.innerHTML = filteredRegistrations.map(reg => `
+                <div class="registration-card">
+                    <div class="registration-header">
+                        <div>
+                            <div class="registration-user">${reg.clientName || 'Cliente'}</div>
+                            <div class="registration-plan">${reg.plan || 'Sem Plano'}</div>
+                        </div>
+                        <div class="registration-status ${reg.status || 'pending'}">
+                            ${(reg.status || 'pending').toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="registration-details">
+                        <div><strong>Telefone:</strong> ${reg.clientPhone || 'N/A'}</div>
+                        <div><strong>Email:</strong> ${reg.clientEmail || 'N/A'}</div>
+                        <div><strong>CPF/CNPJ:</strong> ${reg.document || 'N/A'}</div>
+                        <div><strong>Endereço:</strong> ${reg.address || 'N/A'}</div>
+                        ${reg.additionalInfo ? `<div><strong>Informações Adicionais:</strong> ${reg.additionalInfo}</div>` : ''}
+                    </div>
+                    <div class="registration-timestamp">
+                        <i class="fas fa-clock"></i> ${new Date(reg.timestamp).toLocaleString('pt-BR')}
+                    </div>
+                    <div class="registration-actions">
+                        <button class="btn btn-sm btn-info" onclick="viewRegistrationDetails('${reg.id}')">
+                            <i class="fas fa-eye"></i> Detalhes
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editRegistration('${reg.id}')">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        ${reg.status !== 'approved' ? `<button class="btn btn-sm btn-success" onclick="approveRegistration('${reg.id}')">
+                            <i class="fas fa-check"></i> Aprovar
+                        </button>` : ''}
+                        ${reg.status !== 'rejected' ? `<button class="btn btn-sm btn-danger" onclick="rejectRegistration('${reg.id}')">
+                            <i class="fas fa-times"></i> Rejeitar
+                        </button>` : ''}
+                        <button class="btn btn-sm btn-danger" onclick="deleteRegistration('${reg.id}')" style="background: #e57373;">
+                            <i class="fas fa-trash"></i> Deletar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterRegistrations(status) {
+            if (status === 'all') {
+                filteredRegistrations = currentRegistrations;
+            } else {
+                filteredRegistrations = currentRegistrations.filter(r => (r.status || 'pending') === status);
+            }
+            window.filteredRegistrations = filteredRegistrations;
+            renderRegistrations();
+        }
+
+        // Funcionalidade de visualizar detalhes movida para registrations-modern.js
+        
+        // Funcionalidade de aprovação movida para registrations-modern.js
+        
+        // Funcionalidade de rejeição movida para registrations-modern.js
+        
+        // FUNCOES DE CRIAR/EDITAR/DELETAR CADASTRO
+        let currentEditingRegistrationId = null;
+
+        function openRegistrationCreateModal() {
+            currentEditingRegistrationId = null;
+            document.getElementById('registrationFormTitle').textContent = 'Novo Cadastro';
+            document.getElementById('registrationForm').reset();
+            document.getElementById('regClientJid').focus();
+            document.getElementById('registrationFormModal').classList.add('show');
+        }
+
+        function closeRegistrationFormModal() {
+            document.getElementById('registrationFormModal').classList.remove('show');
+            currentEditingRegistrationId = null;
+        }
+
+        function editRegistration(regId) {
+            const reg = currentRegistrations.find(r => r.id === regId);
+            if (!reg) {
+                showAlert('Cadastro não encontrado', 'danger');
+                return;
+            }
+
+            currentEditingRegistrationId = regId;
+            document.getElementById('registrationFormTitle').textContent = `Editar Cadastro - ${reg.clientName}`;
+            
+            // Preencher o formulário
+            document.getElementById('regClientName').value = reg.clientName || '';
+            document.getElementById('regClientJid').value = reg.clientJid || '';
+            document.getElementById('regClientEmail').value = reg.clientEmail || '';
+            document.getElementById('regClientPhone').value = reg.clientPhone || '';
+            document.getElementById('regDocument').value = reg.document || '';
+            document.getElementById('regAddress').value = reg.address || '';
+            document.getElementById('regAdditionalInfo').value = reg.additionalInfo || '';
+            document.getElementById('regPlan').value = reg.plan || 'basic';
+            document.getElementById('regStatus').value = reg.status || 'pending';
+
+            document.getElementById('registrationFormModal').classList.add('show');
+        }
+
+        async function saveRegistration() {
+            const clientName = document.getElementById('regClientName').value.trim();
+            const clientJid = document.getElementById('regClientJid').value.trim();
+            const clientEmail = document.getElementById('regClientEmail').value.trim();
+            const clientPhone = document.getElementById('regClientPhone').value.trim();
+            const document_val = document.getElementById('regDocument').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const additionalInfo = document.getElementById('regAdditionalInfo').value.trim();
+            const plan = document.getElementById('regPlan').value;
+            const status = document.getElementById('regStatus').value;
+
+            if (!clientName || !clientJid) {
+                showAlert('Por favor, preencha o nome e o JID/telefone do cliente', 'warning');
+                return;
+            }
+
+            try {
+                if (currentEditingRegistrationId) {
+                    // Editar cadastro existente
+                    const response = await fetch(`${API_BASE}/registrations/${currentEditingRegistrationId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            clientName,
+                            clientJid,
+                            clientEmail,
+                            clientPhone,
+                            document: document_val,
+                            address,
+                            additionalInfo,
+                            plan,
+                            status
+                        })
+                    });
+
+                    if (response.ok) {
+                        showAlert('Cadastro atualizado com sucesso!', 'success');
+                        closeRegistrationFormModal();
+                        loadRegistrations();
+                    } else {
+                        showAlert('Erro ao atualizar cadastro', 'danger');
+                    }
+                } else {
+                    // Criar novo cadastro
+                    const response = await fetch(`${API_BASE}/registrations`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            clientName,
+                            clientJid,
+                            clientEmail,
+                            clientPhone,
+                            document: document_val,
+                            address,
+                            additionalInfo,
+                            plan
+                        })
+                    });
+
+                    if (response.ok) {
+                        showAlert('Cadastro criado com sucesso!', 'success');
+                        closeRegistrationFormModal();
+                        loadRegistrations();
+                    } else {
+                        const error = await response.json();
+                        showAlert(error.error || 'Erro ao criar cadastro', 'danger');
+                    }
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('Erro ao salvar cadastro', 'danger');
+            }
+        }
+
+        async function deleteRegistration(regId) {
+            const reg = currentRegistrations.find(r => r.id === regId);
+            if (!confirm(`Tem certeza que deseja deletar o cadastro de ${reg?.clientName || 'este cliente'}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/registrations/${regId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Cadastro deletado com sucesso!', 'success');
+                    closeRegistrationFormModal();
+                    closeRegistrationModal();
+                    loadRegistrations();
+                } else {
+                    showAlert('Erro ao deletar cadastro', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('Erro ao deletar cadastro', 'danger');
+            }
+        }
+
+        function normalizeAttendantStatus(status) {
+            return ['online', 'busy', 'offline'].includes(status) ? status : 'offline';
+        }
+
+        function attendantStatusLabel(status) {
+            const labels = {
+                online: 'Disponivel',
+                busy: 'Em atendimento',
+                offline: 'Offline'
+            };
+            return labels[normalizeAttendantStatus(status)];
+        }
+
+        function renderAttendanceKpis() {
+            const online = currentAttendants.filter(a => a.status === 'online').length;
+            const busy = currentAttendants.filter(a => a.status === 'busy').length;
+            const queue = currentQueue.length;
+            const sessions = currentSessions.length;
+
+            const setText = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = String(value);
+            };
+
+            setText('kpiAttendantsOnline', online);
+            setText('kpiAttendantsBusy', busy);
+            setText('kpiSessions', sessions);
+            setText('kpiQueue', queue);
+            setText('attendantsCountBadge', `${currentAttendants.length} cadastrados`);
+            setText('sessionsCountBadge', `${sessions} sessoes`);
+            setText('queueWaitBadge', `${queue} aguardando`);
+        }
+
+        async function loadAttendants() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/attendants?_ts=${Date.now()}`, { cache: 'no-store' });
+                currentAttendants = await response.json();
+
+                const container = document.getElementById('attendantsList');
+                if (!container) return;
+                if (!currentAttendants.length) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 24px;"><i class="fas fa-headset"></i><h3>Sem atendentes</h3><p>Cadastre um atendente para iniciar o atendimento.</p></div>';
+                    renderAttendanceKpis();
+                    return;
+                }
+
+                container.innerHTML = currentAttendants.map(att => `
+                    <div class="attendance-card">
+                        <div class="attendance-card-title">
+                            <span class="dot ${normalizeAttendantStatus(att.status) === 'online' ? 'online' : normalizeAttendantStatus(att.status) === 'busy' ? 'busy' : 'offline'}"></span>${att.name}
+                        </div>
+                        <div class="attendance-card-meta">
+                            ${att.email}<br>
+                            Login: ${att.login} | Status: ${attendantStatusLabel(att.status)}<br>
+                            Capacidade: ${att.maxConcurrentChats || 1} | Em atendimento: ${(att.activeChats || []).length}
+                        </div>
+                        <div class="attendance-card-actions">
+                            <button class="btn btn-sm btn-info" onclick="openEditAttendantModal('${att.id}')"><i class="fas fa-pen"></i> Editar</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAttendant('${att.id}')"><i class="fas fa-trash"></i> Remover</button>
+                        </div>
+                    </div>
+                `).join('');
+                renderAttendanceKpis();
+            } catch (error) {
+                console.error('Erro ao carregar atendentes:', error);
+            }
+        }
+
+        async function loadAttendanceSessions() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/sessions?_ts=${Date.now()}`, { cache: 'no-store' });
+                currentSessions = await response.json();
+
+                const container = document.getElementById('sessionsList');
+                if (!container) return;
+                if (!currentSessions || currentSessions.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 24px;"><i class="fas fa-comments"></i><h3>Sem sessões ativas</h3><p>As conversas em andamento aparecerão aqui.</p></div>';
+                    renderAttendanceKpis();
+                    return;
+                }
+
+                container.innerHTML = currentSessions.map(session => {
+                    const id = session.sessionId || session.id;
+                    const mode = session.botEnabled ? 'Bot ativo' : 'Manual';
+                    const attendant = session.attendantName || session.attendantId || 'Não atribuído';
+                    return `
+                    <div class="attendance-card">
+                        <div class="attendance-card-title">${session.clientName || session.clientJid || 'Cliente'}</div>
+                        <div class="attendance-card-meta">
+                            ${session.clientJid || 'Sem JID'}<br>
+                            Atendente: ${attendant}<br>
+                            Mensagens: ${session.messages?.length || 0} | Modo: ${mode}
+                        </div>
+                        <div class="attendance-card-actions">
+                            <button class="btn btn-sm btn-info" onclick="openTransferSessionModal('${id}')">
+                                <i class="fas fa-random"></i> Transferir
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="toggleSessionBot('${id}')">
+                                <i class="fas fa-robot"></i> ${session.botEnabled ? 'Manual' : 'Bot'}
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="endSession('${id}')">
+                                <i class="fas fa-stop"></i> Encerrar
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+                renderAttendanceKpis();
+            } catch (error) {
+                console.error('Erro ao carregar sessões:', error);
+            }
+        }
+
+        async function loadAttendanceQueue() {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/queue?_ts=${Date.now()}`, { cache: 'no-store' });
+                const data = await response.json();
+                currentQueue = Array.isArray(data.queue) ? data.queue : [];
+
+                const container = document.getElementById('queueList');
+                if (!container) return;
+                if (currentQueue.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 24px;"><i class="fas fa-hourglass-half"></i><h3>Fila vazia</h3><p>Nenhum cliente aguardando atendimento.</p></div>';
+                    renderAttendanceKpis();
+                    return;
+                }
+
+                container.innerHTML = currentQueue.map((client, index) => `
+                    <div class="attendance-card">
+                        <div class="attendance-card-title">#${index + 1} ${client.clientName || 'Cliente'}</div>
+                        <div class="attendance-card-meta">
+                            ${client.clientJid || client.jid || 'Sem identificador'}<br>
+                            Entrada: ${client.queuedAt ? new Date(client.queuedAt).toLocaleString('pt-BR') : 'N/A'}
+                        </div>
+                        <div class="attendance-card-actions">
+                            <button class="btn btn-sm btn-danger" onclick="removeQueuedClient('${client.clientJid || client.jid}')">
+                                <i class="fas fa-user-minus"></i> Remover da fila
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                renderAttendanceKpis();
+            } catch (error) {
+                console.error('Erro ao carregar fila:', error);
+            }
+        }
+
+        async function refreshAttendanceData() {
+            await Promise.all([
+                loadAttendants(),
+                loadAttendanceSessions(),
+                loadAttendanceQueue(),
+                loadConversationAnalytics()
+            ]);
+        }
+
+        async function loadConversationAnalytics() {
+            try {
+                const nature = document.getElementById('analyticsNatureFilter')?.value || '';
+                const outcome = document.getElementById('analyticsOutcomeFilter')?.value || '';
+                const params = new URLSearchParams();
+                if (nature) params.set('nature', nature);
+                if (outcome) params.set('outcome', outcome);
+
+                const response = await fetch(`${API_BASE}/attendance/analytics/conversations?${params.toString()}&_ts=${Date.now()}`, { cache: 'no-store' });
+                const data = await response.json();
+                const items = Array.isArray(data.items) ? data.items : [];
+
+                const badge = document.getElementById('conversationAnalyticsBadge');
+                if (badge) badge.textContent = `${items.length} analisadas`;
+
+                const container = document.getElementById('conversationAnalyticsList');
+                if (!container) return;
+
+                if (!items.length) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 24px;"><i class="fas fa-search"></i><h3>Sem conversas classificadas</h3></div>';
+                    return;
+                }
+
+                container.innerHTML = items.map(entry => {
+                    const review = entry.review || {};
+                    const session = entry.session || {};
+                    const createdAt = review.createdAt ? new Date(review.createdAt).toLocaleString('pt-BR') : '-';
+                    const status = review.contracted ? 'Contratou' : (review.resolved ? 'Resolvido' : 'Nao resolvido');
+                    const color = review.contracted ? '#16a34a' : (review.resolved ? '#2563eb' : '#dc2626');
+                    return `
+                        <div class="attendance-card">
+                            <div class="attendance-card-title">${session.clientJid || review.clientJid || 'Cliente'}</div>
+                            <div class="attendance-card-meta">
+                                Tipo: ${review.nature || '-'} | Resultado: ${review.outcome || '-'}<br>
+                                Status: <strong style="color:${color};">${status}</strong> | Data: ${createdAt}<br>
+                                Atendente: ${session.attendantId || review.attendantId || '-'}
+                            </div>
+                            <div class="attendance-card-actions">
+                                <button class="btn btn-sm btn-info" onclick="openConversationDetail('${session.sessionId || review.sessionId || ''}', '${session.clientJid || review.clientJid || ''}')">
+                                    <i class="fas fa-comments"></i> Ver conversa
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Erro ao carregar analise de conversas:', error);
+            }
+        }
+
+        async function openConversationDetail(sessionId, clientJid) {
+            if (!sessionId) return;
+            const modal = document.getElementById('conversationDetailModal');
+            const header = document.getElementById('conversationDetailHeader');
+            const body = document.getElementById('conversationDetailBody');
+            if (!modal || !header || !body) return;
+
+            modal.classList.add('show');
+            header.textContent = `Sessao: ${sessionId} | Cliente: ${clientJid || '-'}`;
+            body.innerHTML = '<div style="padding:12px; color:#64748b;">Carregando mensagens...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/session/${sessionId}/history?_ts=${Date.now()}`, { cache: 'no-store' });
+                const messages = await response.json();
+                if (!Array.isArray(messages) || !messages.length) {
+                    body.innerHTML = '<div style="padding:12px; color:#64748b;">Sem mensagens nesta sessao.</div>';
+                    return;
+                }
+
+                body.innerHTML = messages.map(msg => {
+                    const type = msg.type || 'client';
+                    const author = type === 'attendant' ? 'Atendente' : type === 'bot' ? 'Bot' : 'Cliente';
+                    const color = type === 'attendant' ? '#dcfce7' : type === 'bot' ? '#e0f2fe' : '#fff';
+                    const when = msg.timestamp ? new Date(msg.timestamp).toLocaleString('pt-BR') : '-';
+                    const text = (msg.text || '').toString().replace(/[<>&]/g, m => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[m]));
+                    return `
+                        <div style="margin-bottom:10px;">
+                            <div style="display:inline-block; max-width:95%; background:${color}; border:1px solid #e5e7eb; border-radius:10px; padding:8px 10px;">
+                                <div style="font-size:11px; color:#475569; margin-bottom:4px;">${author} - ${when}</div>
+                                <div style="font-size:13px; white-space:pre-wrap;">${text}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                body.innerHTML = '<div style="padding:12px; color:#dc2626;">Erro ao carregar mensagens.</div>';
+            }
+        }
+
+        function closeConversationDetailModal() {
+            const modal = document.getElementById('conversationDetailModal');
+            if (modal) modal.classList.remove('show');
+        }
+
+        function closeTransferSessionModal() {
+            const modal = document.getElementById('transferSessionModal');
+            if (modal) modal.classList.remove('show');
+            currentTransferSessionId = null;
+        }
+
+        async function openTransferSessionModal(sessionId) {
+            currentTransferSessionId = sessionId;
+            const modal = document.getElementById('transferSessionModal');
+            const select = document.getElementById('transferAttendantSelect');
+            const currentInfo = document.getElementById('transferCurrentInfo');
+            if (!modal || !select || !currentInfo) return;
+
+            if (!currentSessions?.length) await loadAttendanceSessions();
+            if (!currentAttendants?.length) await loadAttendants();
+
+            const session = currentSessions.find(s => (s.sessionId || s.id) === sessionId);
+            if (!session) {
+                showAlert('Sessao nao encontrada', 'danger');
+                return;
+            }
+
+            const currentAttendantId = session.attendantId;
+            const currentAttendantName = currentAttendants.find(a => a.id === currentAttendantId)?.name || currentAttendantId || 'Nao atribuido';
+            currentInfo.textContent = `Atendente atual: ${currentAttendantName}`;
+
+            const options = currentAttendants
+                .filter(a => a.id !== currentAttendantId)
+                .filter(a => a.status !== 'offline')
+                .map(a => {
+                    const load = Array.isArray(a.activeChats) ? a.activeChats.length : 0;
+                    const cap = Number(a.maxConcurrentChats) > 0 ? Number(a.maxConcurrentChats) : 1;
+                    return `<option value="${a.id}">${a.name} (${a.status}) - ${load}/${cap}</option>`;
+                })
+                .join('');
+
+            select.innerHTML = `<option value="">Selecione o atendente de destino</option>${options}`;
+            modal.classList.add('show');
+        }
+
+        async function confirmTransferSession() {
+            const select = document.getElementById('transferAttendantSelect');
+            const targetAttendantId = select?.value;
+            if (!currentTransferSessionId) return;
+            if (!targetAttendantId) {
+                showAlert('Selecione um atendente de destino', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/session/${currentTransferSessionId}/transfer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ targetAttendantId })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    showAlert(data.error || 'Erro ao transferir sessao', 'danger');
+                    return;
+                }
+
+                showAlert('Sessao transferida com sucesso', 'success');
+                closeTransferSessionModal();
+                await refreshAttendanceData();
+            } catch (error) {
+                showAlert('Erro ao transferir sessao', 'danger');
+            }
+        }
+
+        function toggleAttendanceAutoRefresh() {
+            attendanceAutoRefresh = !attendanceAutoRefresh;
+            const label = document.getElementById('attendanceAutoLabel');
+            if (label) label.textContent = attendanceAutoRefresh ? 'Auto: ON' : 'Auto: OFF';
+
+            if (!attendanceAutoRefresh && attendanceAutoRefreshTimer) {
+                clearInterval(attendanceAutoRefreshTimer);
+                attendanceAutoRefreshTimer = null;
+            }
+
+            if (attendanceAutoRefresh && document.getElementById('attendance')?.classList.contains('active')) {
+                if (attendanceAutoRefreshTimer) clearInterval(attendanceAutoRefreshTimer);
+                attendanceAutoRefreshTimer = setInterval(refreshAttendanceData, 10000);
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/users`);
+                currentUsers = await response.json();
+
+                const userSelect = document.getElementById('userSelect');
+                if (userSelect) {
+                    userSelect.innerHTML = '<option value="">-- Escolha um usuário --</option>' +
+                        currentUsers.map(u => `<option value="${u.jid}">${u.name}</option>`).join('');
+                }
+
+                const container = document.getElementById('usersList');
+                if (!container) return;
+
+                if (currentUsers.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 30px;"><i class="fas fa-users"></i><h3>Sem usuários</h3></div>';
+                    return;
+                }
+
+                container.innerHTML = currentUsers.map(user => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <div class="item-name">${user.name}</div>
+                            <div class="item-detail">${user.jid} | ${user.messageCount} mensagens</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-info" onclick="blockUser('${user.jid}', true)">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="removeUser('${user.jid}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+            }
+        }
+
+        async function loadBlockedUsers() {
+            try {
+                const response = await fetch(`${API_BASE}/blocked-users`);
+                const blocked = await response.json();
+
+                const container = document.getElementById('blockedUsersList');
+                if (blocked.length === 0) {
+                    container.innerHTML = '<div class="empty-state" style="padding: 30px;"><i class="fas fa-check-circle"></i><h3>Nenhum usuário bloqueado</h3></div>';
+                    return;
+                }
+
+                container.innerHTML = blocked.map(user => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <div class="item-name">${user.name}</div>
+                            <div class="item-detail">${user.jid}</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn btn-sm btn-success" onclick="unblockUser('${user.jid}')">
+                                <i class="fas fa-lock-open"></i> Desbloquear
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar usuários bloqueados:', error);
+            }
+        }
+
+        async function loadMonitor() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/online-users`);
+                const data = await response.json();
+                
+                const container = document.getElementById('monitorData');
+                if (!data.users || data.users.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-info-circle"></i><h3>Sem usuários online</h3></div>';
+                    return;
+                }
+
+                container.innerHTML = data.users.map(user => `
+                    <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                        <strong>${user.name}</strong> - ${user.currentMenu || 'Menu Principal'}
+                        <div style="font-size: 11px; color: #999;">Ultimo update: ${new Date(user.lastActive).toLocaleString('pt-BR')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar monitor:', error);
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_BASE}/config`);
+                const config = await response.json();
+
+                document.getElementById('botName').value = config.botName || '';
+                document.getElementById('geminiModel').value = config.geminiModel || 'gemini-1.5-flash';
+                document.getElementById('botContext').value = config.botContext || '';
+                document.getElementById('notificationTargetPhone').value = config.notificationTargetPhone || '';
+                document.getElementById('notifyOnRegistration').checked = !!config.notifyOnRegistration;
+                document.getElementById('notifyOnAttendantRequest').checked = !!config.notifyOnAttendantRequest;
+                renderAdminPhones(Array.isArray(config.adminPhones) ? config.adminPhones : []);
+                if (typeof loadAttendanceMessageSettings === 'function') {
+                    await loadAttendanceMessageSettings();
+                }
+                if (typeof loadGlobalMessageTemplates === 'function') {
+                    await loadGlobalMessageTemplates();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar configurações:', error);
+            }
+        }
+
+        // BOT CONTROL FUNCTIONS
+        function renderBotHistory(history) {
+            const container = document.getElementById('botHistoryList');
+            if (!container) return;
+
+            const items = Array.isArray(history) ? history : [];
+            if (items.length === 0) {
+                container.innerHTML = '<div class="empty-state" style="padding: 30px;"><i class="fas fa-history"></i><h3>Nenhum registro</h3><p>As alterações do estado do bot aparecerão aqui</p></div>';
+                return;
+            }
+
+            container.innerHTML = items.map(h => {
+                const ts = new Date(h.timestamp || h.time || Date.now()).toLocaleString('pt-BR');
+                const action = (h.action || h.state || h.status || '').toString().toUpperCase();
+                const by = h.by || h.user || 'painel';
+                const source = h.source || h.ui || 'painel';
+                return `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <div class="item-name">${action}${source ? ' por ' + source : ''}</div>
+                            <div class="item-detail">${ts} ⬢ por ${by}${source ? ' ⬢ ' + source : ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function loadBotStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/bot-status`);
+                const data = await response.json();
+                const enabled = (typeof data.enabled === 'boolean') ? data.enabled : (data.botEnabled ?? (data.status === 'enabled'));
+
+                const iconEl = document.getElementById('botStatusIcon');
+                const textEl = document.getElementById('botControlStatusText');
+                const timeEl = document.getElementById('botStatusTime');
+
+                if (iconEl && textEl) {
+                    if (enabled) {
+                        iconEl.textContent = 'ON';
+                        textEl.textContent = 'ATIVADO';
+                    } else {
+                        iconEl.textContent = 'OFF';
+                        textEl.textContent = 'DESATIVADO';
+                    }
+                }
+                if (timeEl) {
+                    const last = data.changedAt || data.lastUpdate || Date.now();
+                    timeEl.textContent = `Ultima atualizacao: ${new Date(last).toLocaleString('pt-BR')}`;
+                }
+
+                const historyResponse = await fetch(`${API_BASE}/bot-control/history?limit=20`).catch(() => null);
+                const historyData = historyResponse ? await historyResponse.json().catch(() => ({})) : {};
+                renderBotHistory(historyData.history || data.history || data.botHistory || []);
+            } catch (error) {
+                console.error('Erro ao carregar status do bot:', error);
+                showAlert('Erro ao carregar status do bot', 'danger');
+            }
+        }
+
+        async function enableBotFromPanel() {
+            try {
+                const response = await fetch(`${API_BASE}/bot-control/enable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminId: 'admin-modern' })
+                });
+                const result = await response.json().catch(() => ({}));
+                if (response.ok) {
+                    showAlert(result.message || 'Bot ativado com sucesso', 'success');
+                    loadBotStatus();
+                } else {
+                    showAlert(result.error || 'Falha ao ativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao ativar bot:', error);
+                showAlert('Erro ao ativar bot', 'danger');
+            }
+        }
+
+        async function disableBotFromPanel() {
+            if (!confirm('Tem certeza que deseja desativar o bot?')) return;
+            try {
+                const response = await fetch(`${API_BASE}/bot-control/disable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminId: 'admin-modern' })
+                });
+                const result = await response.json().catch(() => ({}));
+                if (response.ok) {
+                    showAlert(result.message || 'Bot desativado com sucesso', 'success');
+                    loadBotStatus();
+                } else {
+                    showAlert(result.error || 'Falha ao desativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao desativar bot:', error);
+                showAlert('Erro ao desativar bot', 'danger');
+            }
+        }
+
+        // MODAL FUNCTIONS
+        function openMenuModal() {
+            document.getElementById('menuModal').classList.add('show');
+            document.getElementById('menuForm').reset();
+        }
+
+        function closeMenuModal() {
+            document.getElementById('menuModal').classList.remove('show');
+        }
+
+        async function saveMenu() {
+            const id = document.getElementById('menuId').value.trim();
+            const title = document.getElementById('menuTitle').value.trim();
+            const message = document.getElementById('menuMessage').value.trim();
+
+            if (!id || !title || !message) {
+                showAlert('Preencha todos os campos obrigatórios', 'warning');
+                return;
+            }
+
+            try {
+                const isEdit = currentMenus.some(m => m.id === id);
+                const method = isEdit ? 'PUT' : 'POST';
+                const endpoint = isEdit ? `${API_BASE}/menus/${id}` : `${API_BASE}/menus`;
+                
+                const response = await fetch(endpoint, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        id: id, 
+                        title: title, 
+                        message: message, 
+                        items: [] 
+                    })
+                });
+
+                if (response.ok) {
+                    const successMsg = isEdit ? 'Menu atualizado com sucesso!' : 'Menu criado com sucesso!';
+                    showAlert(successMsg, 'success');
+                    closeMenuModal();
+                    loadMenus();
+                    document.getElementById('menuModalTitle').textContent = 'Novo Menu';
+                } else {
+                    const errorData = await response.json().catch(() => ({}));
+                    showAlert(errorData.error || 'Erro ao salvar menu', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar menu:', error);
+                showAlert('Erro ao salvar menu: ' + error.message, 'danger');
+            }
+        }
+
+        function openAttendantModal() {
+            document.getElementById('attendantModal').classList.add('show');
+            document.getElementById('attendantForm').reset();
+            const capacityInput = document.getElementById('attendantMaxConcurrentChats');
+            if (capacityInput) {
+                const defaultCapacity = Number(document.getElementById('defaultMaxConcurrentChats')?.value || 1);
+                capacityInput.value = Number.isFinite(defaultCapacity) && defaultCapacity > 0 ? defaultCapacity : 1;
+            }
+        }
+
+        function closeAttendantModal() {
+            document.getElementById('attendantModal').classList.remove('show');
+        }
+
+        async function saveAttendant(e) {
+            if (e && e.preventDefault) e.preventDefault();
+            const name = document.getElementById('attendantName').value;
+            const email = document.getElementById('attendantEmail').value;
+            const login = document.getElementById('attendantLogin').value;
+            const password = document.getElementById('attendantPassword').value;
+            const maxConcurrentChats = Number(document.getElementById('attendantMaxConcurrentChats').value || 1);
+
+            if (!Number.isFinite(maxConcurrentChats) || maxConcurrentChats < 1) {
+                showAlert('Capacidade simultnea deve ser no mnimo 1', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/attendants`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, login, password, maxConcurrentChats })
+                });
+
+                if (response.ok) {
+                    showAlert('Atendente criado com sucesso!', 'success');
+                    closeAttendantModal();
+                    loadAttendants();
+                }
+            } catch (error) {
+                showAlert('Erro ao criar atendente', 'danger');
+            }
+        }
+
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').classList.remove('show');
+        }
+
+        // UTILITY FUNCTIONS
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 4000);
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                window.location.href = '/login';
+            }
+        }
+
+        async function blockUser(jid, block) {
+            try {
+                const response = await fetch(`${API_BASE}/users/${jid}/block`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ block })
+                });
+
+                if (response.ok) {
+                    showAlert(block ? 'Usuário bloqueado' : 'Usuário desbloqueado', 'success');
+                    loadUsers();
+                    loadBlockedUsers();
+                }
+            } catch (error) {
+                showAlert('Erro ao bloquear usuário', 'danger');
+            }
+        }
+
+        async function unblockUser(jid) {
+            try {
+                const response = await fetch(`${API_BASE}/users/${jid}/block`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ block: false })
+                });
+
+                if (response.ok) {
+                    showAlert('Usuário desbloqueado', 'success');
+                    loadBlockedUsers();
+                }
+            } catch (error) {
+                showAlert('Erro ao desbloquear usuário', 'danger');
+            }
+        }
+
+        async function removeUser(jid) {
+            if (!confirm('Remover este usuário?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/users/${jid}/remove`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    showAlert('Usuário removido', 'success');
+                    loadUsers();
+                }
+            } catch (error) {
+                showAlert('Erro ao remover usuário', 'danger');
+            }
+        }
+
+        async function editMenu(menuId) {
+            const menu = currentMenus.find(m => m.id === menuId);
+            if (!menu) {
+                showAlert('Menu não encontrado', 'danger');
+                return;
+            }
+
+            const itemValueKey = (action) => {
+                if (action === 'submenu') return 'submenuId';
+                if (action === 'registration') return 'registrationPlan';
+                if (action === 'attendant') return 'attendantType';
+                return 'message';
+            };
+
+            const getValueFieldLabel = (action) => {
+                if (action === 'submenu') return 'Destino do submenu';
+                if (action === 'registration') return 'Plano do cadastro';
+                if (action === 'attendant') return 'Tipo de atendimento';
+                return 'Mensagem fixa ou chave de conteúdo';
+            };
+
+            const renderValueInput = (action, value = '') => {
+                if (action === 'submenu') {
+                    const options = getMenuMetaOptions(menuId)
+                        .map(option => `<option value="${option.id}" ${option.id === value ? 'selected' : ''}>${option.title} (${option.id})</option>`)
+                        .join('');
+                    return `<select id="itemValue"><option value="">Selecione um submenu</option>${options}</select>`;
+                }
+
+                if (action === 'registration') {
+                    const options = (currentMenuEditorMeta.registrationPlans || [])
+                        .map(option => `<option value="${option.value}" ${option.value === value ? 'selected' : ''}>${option.label}</option>`)
+                        .join('');
+                    return `<select id="itemValue"><option value="">Selecione o plano</option>${options}</select>`;
+                }
+
+                if (action === 'attendant') {
+                    const options = (currentMenuEditorMeta.attendantTypes || [])
+                        .map(option => `<option value="${option.value}" ${option.value === value ? 'selected' : ''}>${option.label}</option>`)
+                        .join('');
+                    return `<select id="itemValue"><option value="">Selecione o tipo</option>${options}</select>`;
+                }
+
+                return `<textarea id="itemValue" rows="3" placeholder="Digite a mensagem exibida ao cliente ou uma chave de conteúdo">${value || ''}</textarea>`;
+            };
+
+            const normalizeItem = (item) => {
+                const action = item.action || (item.submenuId ? 'submenu' : item.registrationPlan ? 'registration' : item.attendantType ? 'attendant' : 'message');
+                const value = item.submenuId || item.registrationPlan || item.attendantType || item.message || '';
+                return {
+                    id: item.id || `item_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                    label: item.label || 'Sem rótulo',
+                    action,
+                    value
+                };
+            };
+
+            let currentItems = (menu.items || []).map(normalizeItem);
+            let editingItemIndex = null;
+
+            const container = document.createElement('div');
+            container.className = 'modal-overlay show';
+
+            const renderModal = () => {
+                container.innerHTML = `
+                    <div class="modal-content" style="width: 92%; max-width: 820px;">
+                        <div class="modal-header">
+                            <h2>Editar Menu: ${menu.title}</h2>
+                            <button class="modal-close" type="button" data-close-modal>&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editMenuForm">
+                                <div class="form-group">
+                                    <label>Título</label>
+                                    <input id="menuTitle" value="${menu.title || ''}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Mensagem do Menu</label>
+                                    <textarea id="menuMessage" rows="3" required>${menu.message || ''}</textarea>
+                                </div>
+
+                                <div style="padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; margin-top: 14px;">
+                                    <div style="display:flex; justify-content:space-between; gap:16px; align-items:flex-start; margin-bottom: 10px;">
+                                        <div>
+                                            <h3 style="font-size: 14px; margin-bottom: 4px;">Itens do Menu</h3>
+                                            <div style="font-size:12px; color:#64748b;">Configure cada item escolhendo a ação e o destino correto.</div>
+                                        </div>
+                                        <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end;">
+                                            ${getMenuReferenceBadges(menu.id)}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>Rótulo</label>
+                                            <input id="itemLabel" placeholder="Ex: Cardápio Digital">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Ação</label>
+                                            <select id="itemAction">
+                                                <option value="">Selecione</option>
+                                                <option value="submenu">Submenu</option>
+                                                <option value="registration">Contratar plano</option>
+                                                <option value="attendant">Atendimento humano</option>
+                                                <option value="message">Mensagem fixa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="itemValueLabel">${getValueFieldLabel(editingItemIndex === null ? '' : currentItems[editingItemIndex].action)}</label>
+                                        <div id="itemValueContainer">
+                                            ${renderValueInput(editingItemIndex === null ? '' : currentItems[editingItemIndex].action, editingItemIndex === null ? '' : currentItems[editingItemIndex].value)}
+                                        </div>
+                                    </div>
+                                    <div class="btn-group" style="margin-bottom: 10px;">
+                                        <button type="button" class="btn btn-primary" id="saveItemBtn">${editingItemIndex === null ? 'Adicionar item' : 'Salvar item'}</button>
+                                        <button type="button" class="btn btn-secondary" id="cancelItemEditBtn" ${editingItemIndex === null ? 'style="display:none;"' : ''}>Cancelar edição</button>
+                                    </div>
+
+                                    <div id="itemsList" style="max-height: 260px; overflow-y:auto;">
+                                        ${currentItems.length === 0 ? '<div class="empty-state" style="padding: 18px;"><h3>Sem itens</h3><p>Adicione itens para montar o fluxo.</p></div>' : ''}
+                                        ${currentItems.map((item, idx) => `
+                                            <div class="attendance-card" style="margin-bottom: 8px;">
+                                                <div class="attendance-card-title">${item.label}</div>
+                                                <div class="attendance-card-meta">Ação: ${getActionPresentation(item.action).label} | Destino: ${item.value || '-'}</div>
+                                                <div class="attendance-card-actions">
+                                                    <button type="button" class="btn btn-sm btn-info" data-edit-item="${idx}">Editar</button>
+                                                    <button type="button" class="btn btn-sm btn-danger" data-delete-item="${idx}">Excluir</button>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-close-modal>Cancelar</button>
+                            <button type="submit" class="btn btn-primary" form="editMenuForm">Salvar Menu</button>
+                        </div>
+                    </div>
+                `;
+
+                container.querySelectorAll('[data-close-modal]').forEach(btn => {
+                    btn.addEventListener('click', () => container.remove());
+                });
+
+                const itemLabel = container.querySelector('#itemLabel');
+                const itemAction = container.querySelector('#itemAction');
+                const saveItemBtn = container.querySelector('#saveItemBtn');
+                const cancelItemEditBtn = container.querySelector('#cancelItemEditBtn');
+                const itemValueLabel = container.querySelector('#itemValueLabel');
+                const itemValueContainer = container.querySelector('#itemValueContainer');
+
+                const syncValueField = () => {
+                    const action = itemAction.value;
+                    const currentValue = container.querySelector('#itemValue')?.value || '';
+                    itemValueLabel.textContent = getValueFieldLabel(action);
+                    itemValueContainer.innerHTML = renderValueInput(action, currentValue);
+                };
+
+                if (editingItemIndex !== null) {
+                    const item = currentItems[editingItemIndex];
+                    itemLabel.value = item.label;
+                    itemAction.value = item.action;
+                }
+
+                itemAction.addEventListener('change', syncValueField);
+
+                saveItemBtn.addEventListener('click', () => {
+                    const label = itemLabel.value.trim();
+                    const action = itemAction.value;
+                    const value = container.querySelector('#itemValue')?.value?.trim?.() || '';
+                    if (!label || !action || !value) {
+                        showAlert('Preencha rótulo, ação e destino do item', 'warning');
+                        return;
+                    }
+
+                    const payload = {
+                        id: editingItemIndex === null ? `item_${Date.now()}_${Math.floor(Math.random() * 1000)}` : currentItems[editingItemIndex].id,
+                        label,
+                        action,
+                        value
+                    };
+
+                    if (editingItemIndex === null) {
+                        currentItems.push(payload);
+                    } else {
+                        currentItems[editingItemIndex] = payload;
+                        editingItemIndex = null;
+                    }
+                    renderModal();
+                });
+
+                cancelItemEditBtn.addEventListener('click', () => {
+                    editingItemIndex = null;
+                    renderModal();
+                });
+
+                container.querySelectorAll('[data-edit-item]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        editingItemIndex = Number(btn.getAttribute('data-edit-item'));
+                        renderModal();
+                    });
+                });
+
+                container.querySelectorAll('[data-delete-item]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const index = Number(btn.getAttribute('data-delete-item'));
+                        currentItems.splice(index, 1);
+                        if (editingItemIndex === index) editingItemIndex = null;
+                        renderModal();
+                    });
+                });
+
+                container.querySelector('#editMenuForm')?.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const title = container.querySelector('#menuTitle').value.trim();
+                    const message = container.querySelector('#menuMessage').value.trim();
+                    if (!title || !message) {
+                        showAlert('Título e mensagem são obrigatórios', 'warning');
+                        return;
+                    }
+
+                    const formattedItems = currentItems.map(item => {
+                        const key = itemValueKey(item.action);
+                        return {
+                            id: item.id,
+                            label: item.label,
+                            action: item.action,
+                            [key]: item.value
+                        };
+                    });
+
+                    try {
+                        const response = await fetch(`${API_BASE}/menus/${menuId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                ...menu,
+                                id: menu.id,
+                                title,
+                                message,
+                                items: formattedItems
+                            })
+                        });
+
+                        if (response.ok) {
+                            showAlert('Menu atualizado com sucesso', 'success');
+                            container.remove();
+                            loadMenus();
+                        } else {
+                            showAlert('Erro ao salvar menu', 'danger');
+                        }
+                    } catch (error) {
+                        showAlert('Erro ao atualizar menu', 'danger');
+                    }
+                });
+            };
+
+            document.body.appendChild(container);
+            renderModal();
+        }
+
+        async function duplicateMenu(menuId) {
+            const menu = currentMenus.find(m => m.id === menuId);
+            if (!menu) return;
+
+            const suffix = Date.now().toString().slice(-4);
+            const duplicated = {
+                ...menu,
+                id: `${menu.id}_copy_${suffix}`,
+                title: `${menu.title} (cópia)`,
+                items: (menu.items || []).map(item => ({
+                    ...item,
+                    id: item.id ? `${item.id}_${suffix}` : `item_${suffix}_${Math.random().toString(36).slice(2, 7)}`
+                }))
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/menus`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(duplicated)
+                });
+
+                if (response.ok) {
+                    showAlert('Menu duplicado com sucesso', 'success');
+                    loadMenus();
+                } else {
+                    showAlert('Não foi possível duplicar o menu', 'warning');
+                }
+            } catch (error) {
+                showAlert('Erro ao duplicar menu', 'danger');
+            }
+        }
+
+        async function deleteMenu(menuId) {
+            if (!confirm('Remover este menu?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/menus/${menuId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Menu removido', 'success');
+                    loadMenus();
+                }
+            } catch (error) {
+                showAlert('Erro ao remover menu', 'danger');
+            }
+        }
+
+        async function deleteAttendant(attendantId) {
+            if (!confirm('Remover este atendente?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/attendants/${attendantId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Atendente removido', 'success');
+                    loadAttendants();
+                }
+            } catch (error) {
+                showAlert('Erro ao remover atendente', 'danger');
+            }
+        }
+
+        async function endSession(sessionId) {
+            if (!confirm('Encerrar esta sessão?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/session/${sessionId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Sessão encerrada', 'success');
+                    refreshAttendanceData();
+                }
+            } catch (error) {
+                showAlert('Erro ao encerrar sessão', 'danger');
+            }
+        }
+
+        async function toggleSessionBot(sessionId) {
+            try {
+                const response = await fetch(`${API_BASE}/attendance/session/${sessionId}/bot-toggle`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    showAlert('Modo de atendimento atualizado', 'success');
+                    refreshAttendanceData();
+                } else {
+                    showAlert('Não foi possível alternar o modo da sessão', 'warning');
+                }
+            } catch (error) {
+                showAlert('Erro ao alternar modo da sessão', 'danger');
+            }
+        }
+
+        async function removeQueuedClient(clientJid) {
+            if (!clientJid) return;
+            if (!confirm('Remover cliente da fila de espera?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/attendance/queue/${encodeURIComponent(clientJid)}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showAlert('Cliente removido da fila', 'success');
+                    refreshAttendanceData();
+                } else {
+                    showAlert('Não foi possível remover da fila', 'warning');
+                }
+            } catch (error) {
+                showAlert('Erro ao remover cliente da fila', 'danger');
+            }
+        }
+
+        // MESSAGE FORM
+        document.getElementById('messageForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const jid = document.getElementById('userSelect').value;
+            const message = document.getElementById('messageText').value;
+
+            if (!jid || !message) {
+                showAlert('Selecione um usuário e digite uma mensagem', 'warning');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/users/${jid}/message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                if (response.ok) {
+                    showAlert('Mensagem enviada com sucesso!', 'success');
+                    document.getElementById('messageText').value = '';
+                    document.getElementById('userSelect').value = '';
+                }
+            } catch (error) {
+                showAlert('Erro ao enviar mensagem', 'danger');
+            }
+        });
+
+        // SETTINGS FORM
+        document.getElementById('settingsForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const config = {
+                botName: document.getElementById('botName').value,
+                geminiModel: document.getElementById('geminiModel').value,
+                botContext: document.getElementById('botContext').value,
+                geminiApiKey: document.getElementById('geminiKey').value || undefined,
+                notificationTargetPhone: document.getElementById('notificationTargetPhone').value,
+                notifyOnRegistration: document.getElementById('notifyOnRegistration').checked,
+                notifyOnAttendantRequest: document.getElementById('notifyOnAttendantRequest').checked,
+                adminPhones: collectAdminPhones()
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+
+                if (response.ok) {
+                    showAlert('Configurações salvas com sucesso!', 'success');
+                }
+            } catch (error) {
+                showAlert('Erro ao salvar configurações', 'danger');
+            }
+        });
+
+        // MODAL CLOSE ON ESCAPE
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+            }
+        });
+
+        // MODAL OVERLAY CLOSE
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        // BOT CONTROL FUNCTIONS
+        async function loadBotControl() {
+            try {
+                const response = await fetch(`${API_BASE}/bot/status`);
+                const data = await response.json();
+                
+                updateBotStatusDisplay(data?.botEnabled || false);
+                loadBotHistory();
+            } catch (error) {
+                console.error('Erro ao carregar status do bot:', error);
+                loadBotHistory();
+            }
+        }
+
+        function updateBotStatusDisplay(isEnabled) {
+            const statusIcon = document.getElementById('botStatusIcon');
+            const statusText = document.getElementById('botControlStatusText');
+            const statusTime = document.getElementById('botStatusTime');
+            const timestamp = new Date().toLocaleString('pt-BR');
+
+            if (isEnabled) {
+                statusIcon.textContent = 'ON';
+                statusText.textContent = 'ATIVADO';
+                statusText.style.color = 'var(--success)';
+                statusTime.textContent = `Ultima atualizacao: ${timestamp}`;
+            } else {
+                statusIcon.textContent = 'OFF';
+                statusText.textContent = 'DESATIVADO';
+                statusText.style.color = 'var(--danger)';
+                statusTime.textContent = `Ultima atualizacao: ${timestamp}`;
+            }
+        }
+
+        async function enableBotFromPanel() {
+            if (!confirm('Tem certeza que deseja ATIVAR o bot?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/bot/enable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showAlert('Bot ativado com sucesso!', 'success');
+                    updateBotStatusDisplay(true);
+                    loadBotHistory();
+                } else {
+                    showAlert('Erro ao ativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('Erro ao ativar o bot', 'danger');
+            }
+        }
+
+        async function disableBotFromPanel() {
+            if (!confirm('Tem certeza que deseja DESATIVAR o bot?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/bot/disable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showAlert('Bot desativado com sucesso!', 'success');
+                    updateBotStatusDisplay(false);
+                    loadBotHistory();
+                } else {
+                    showAlert('Erro ao desativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert('Erro ao desativar o bot', 'danger');
+            }
+        }
+
+        async function loadBotHistory() {
+            try {
+                const response = await fetch(`${API_BASE}/bot/history`);
+                const history = await response.json();
+                const container = document.getElementById('botHistoryList');
+
+                if (!history || history.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #999;"><i class="fas fa-history"></i> Nenhum registro de alterações</div>';
+                    return;
+                }
+
+                const historyHTML = history.slice(0, 20).map(entry => `
+                    <div style="padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-weight: 600; color: ${entry.status === 'enabled' ? 'var(--success)' : 'var(--danger)'};">
+                                ${entry.status === 'enabled' ? 'ATIVADO' : 'DESATIVADO'}
+                            </span>
+                            <span style="color: #999; font-size: 11px;">${new Date(entry.timestamp).toLocaleString('pt-BR')}</span>
+                        </div>
+                        ${entry.admin ? `<div style="color: #666; font-size: 12px;">Por: ${entry.admin}</div>` : ''}
+                    </div>
+                `).join('');
+
+                container.innerHTML = historyHTML;
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+                document.getElementById('botHistoryList').innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Erro ao carregar histórico</div>';
+            }
+        }
+
+        function formatRelativeDate(timestamp) {
+            if (!timestamp) return 'agora';
+            const diffMs = Math.max(0, Date.now() - Number(timestamp));
+            const diffMinutes = Math.floor(diffMs / 60000);
+            if (diffMinutes < 1) return 'agora';
+            if (diffMinutes < 60) return `${diffMinutes} min atras`;
+            const diffHours = Math.floor(diffMinutes / 60);
+            if (diffHours < 24) return `${diffHours} h atras`;
+            return `${Math.floor(diffHours / 24)} dia(s) atras`;
+        }
+
+        function renderDashboardActivities(activities) {
+            const container = document.getElementById('recentActivities');
+            if (!container) return;
+
+            if (!Array.isArray(activities) || activities.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 32px 20px; color: #999;">Nenhuma atividade recente relevante.</div>';
+                return;
+            }
+
+            container.innerHTML = activities.map(activity => `
+                <div style="display:flex; gap:12px; padding:14px; background: var(--light); border-radius: var(--radius-md); border:1px solid var(--border);">
+                    <div style="width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; background: rgba(15,118,110,0.08); color: var(--primary);">
+                        <i class="fas fa-${activity.icon || 'circle-info'}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; font-size: 13px; margin-bottom: 4px;">${activity.title || 'Atualizacao'}</div>
+                        <div style="font-size: 12px; color: #475569; line-height: 1.5; margin-bottom: 4px;">${activity.description || ''}</div>
+                        <div style="font-size: 11px; color: #94a3b8;">${formatRelativeDate(activity.timestamp)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDashboardInsights(insights) {
+            const container = document.getElementById('dashboardInsights');
+            if (!container) return;
+
+            const items = Array.isArray(insights) && insights.length ? insights : ['Sem observacoes operacionais no momento.'];
+            container.innerHTML = items.map((insight, index) => `
+                <div style="display:flex; gap:12px; padding:14px; border-radius: var(--radius-md); background:${index === 0 ? 'linear-gradient(135deg, rgba(15,118,110,0.09), rgba(2,132,199,0.07))' : 'var(--light)'}; border:1px solid var(--border);">
+                    <div style="width:30px; height:30px; border-radius:50%; background:white; display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--primary); flex-shrink:0;">${index + 1}</div>
+                    <div style="font-size:13px; color:#334155; line-height:1.6;">${insight}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderDashboardHealth(health, metrics) {
+            const container = document.getElementById('dashboardHealth');
+            if (!container) return;
+
+            const items = [
+                {
+                    label: 'Bot automatico',
+                    value: health?.botEnabled ? 'Ativo' : 'Pausado',
+                    color: health?.botEnabled ? 'var(--success)' : 'var(--danger)'
+                },
+                {
+                    label: 'Fila atual',
+                    value: `${metrics?.queueSize || 0} aguardando`,
+                    color: (metrics?.queueSize || 0) > 0 ? 'var(--warning)' : 'var(--success)'
+                },
+                {
+                    label: '1a resposta media',
+                    value: `${health?.averageFirstResponseSeconds || 0}s / meta ${health?.targetFirstResponseSeconds || 0}s`,
+                    color: (health?.averageFirstResponseSeconds || 0) > (health?.targetFirstResponseSeconds || 0) ? 'var(--warning)' : 'var(--success)'
+                },
+                {
+                    label: 'Espera media da fila',
+                    value: `${health?.averageQueueWaitSeconds || 0}s / meta ${health?.targetQueueWaitSeconds || 0}s`,
+                    color: (health?.averageQueueWaitSeconds || 0) > (health?.targetQueueWaitSeconds || 0) ? 'var(--danger)' : 'var(--success)'
+                }
+            ];
+
+            container.innerHTML = items.map(item => `
+                <div style="padding:12px 14px; border-radius: var(--radius-md); border:1px solid var(--border); background: white;">
+                    <div style="font-size:12px; color:#64748b; margin-bottom:6px;">${item.label}</div>
+                    <div style="font-size:14px; font-weight:800; color:${item.color};">${item.value}</div>
+                </div>
+            `).join('');
+        }
+
+        async function loadDashboard() {
+            try {
+                const response = await fetch(`${API_BASE}/dashboard/summary`);
+                const data = await response.json();
+                const metrics = data?.metrics || {};
+                const health = data?.health || {};
+
+                document.getElementById('totalUsers').textContent = metrics.connectedUsers || 0;
+                document.getElementById('totalMenus').textContent = metrics.totalMenus || 0;
+                document.getElementById('pendingRegistrations').textContent = metrics.pendingRegistrations || 0;
+                document.getElementById('activeSessions').textContent = metrics.activeSessions || 0;
+
+                renderDashboardActivities(data?.activities || []);
+                renderDashboardInsights(data?.insights || []);
+                renderDashboardHealth(health, metrics);
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+
+        async function loadBotControl() {
+            try {
+                const response = await fetch(`${API_BASE}/bot-status`);
+                const data = await response.json();
+                updateBotStatusDisplay(Boolean(data?.enabled), data?.lastStatusChange);
+                await loadBotHistory();
+            } catch (error) {
+                console.error('Erro ao carregar status do bot:', error);
+                await loadBotHistory();
+            }
+        }
+
+        function updateBotStatusDisplay(isEnabled, lastStatusChange) {
+            const statusIcon = document.getElementById('botStatusIcon');
+            const statusText = document.getElementById('botControlStatusText');
+            const statusTime = document.getElementById('botStatusTime');
+            const timestamp = lastStatusChange
+                ? new Date(lastStatusChange).toLocaleString('pt-BR')
+                : new Date().toLocaleString('pt-BR');
+
+            if (statusIcon) statusIcon.textContent = isEnabled ? 'ON' : 'OFF';
+            if (statusText) {
+                statusText.textContent = isEnabled ? 'ATIVADO' : 'DESATIVADO';
+                statusText.style.color = isEnabled ? 'var(--success)' : 'var(--danger)';
+            }
+            if (statusTime) statusTime.textContent = `Ultima atualizacao: ${timestamp}`;
+        }
+
+        async function enableBotFromPanel() {
+            if (!confirm('Tem certeza que deseja ATIVAR o bot?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/bot-control/enable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminId: 'painel-admin' })
+                });
+                const result = await response.json();
+
+                if (response.ok && result?.success) {
+                    showAlert('Bot ativado com sucesso!', 'success');
+                    updateBotStatusDisplay(Boolean(result?.currentStatus?.enabled), result?.currentStatus?.lastStatusChange);
+                    await loadBotHistory();
+                } else {
+                    showAlert(result?.error || 'Erro ao ativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao ativar o bot:', error);
+                showAlert('Erro ao ativar o bot', 'danger');
+            }
+        }
+
+        async function disableBotFromPanel() {
+            if (!confirm('Tem certeza que deseja DESATIVAR o bot?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/bot-control/disable`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminId: 'painel-admin' })
+                });
+                const result = await response.json();
+
+                if (response.ok && result?.success) {
+                    showAlert('Bot desativado com sucesso!', 'success');
+                    updateBotStatusDisplay(Boolean(result?.currentStatus?.enabled), result?.currentStatus?.lastStatusChange);
+                    await loadBotHistory();
+                } else {
+                    showAlert(result?.error || 'Erro ao desativar o bot', 'danger');
+                }
+            } catch (error) {
+                console.error('Erro ao desativar o bot:', error);
+                showAlert('Erro ao desativar o bot', 'danger');
+            }
+        }
+
+        async function loadBotHistory() {
+            const container = document.getElementById('botHistoryList');
+            if (!container) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/bot-control/history?limit=20`);
+                const payload = await response.json();
+                const history = Array.isArray(payload?.history) ? payload.history : [];
+
+                if (history.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: #999;"><i class="fas fa-history"></i> Nenhum registro de alteracoes</div>';
+                    return;
+                }
+
+                container.innerHTML = history.map(entry => `
+                    <div style="padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-weight: 600; color: ${entry.status === 'enabled' ? 'var(--success)' : 'var(--danger)'};">
+                                ${entry.status === 'enabled' ? 'ATIVADO' : 'DESATIVADO'}
+                            </span>
+                            <span style="color: #999; font-size: 11px;">${new Date(entry.timestamp).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <div style="color: #666; font-size: 12px;">Por: ${entry.admin || entry.changedBy || 'admin'}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar historico:', error);
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Erro ao carregar historico</div>';
+            }
+        }
+
+        function renderRegistrations() {
+            const container = document.getElementById('registrationsList');
+            if (!container) return;
+
+            const list = Array.isArray(filteredRegistrations) ? filteredRegistrations : [];
+            if (list.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-clipboard-list"></i><h3>Nenhum cadastro</h3><p>Os cadastros realizados via WhatsApp aparecerao aqui</p></div>';
+                return;
+            }
+
+            const sorted = [...list].sort((a, b) => (b.updatedAt || b.timestamp || 0) - (a.updatedAt || a.timestamp || 0));
+            container.innerHTML = sorted.map(reg => `
+                <div class="registration-card">
+                    <div class="registration-header">
+                        <div>
+                            <div class="registration-user">${reg.clientName || 'Cliente'}</div>
+                            <div class="registration-plan">${(reg.plan || 'Sem plano').toUpperCase()}</div>
+                        </div>
+                        <div class="registration-status ${reg.status || 'pending'}">
+                            ${(reg.status || 'pending').toUpperCase()}
+                        </div>
+                    </div>
+                    <div class="registration-details">
+                        <div><strong>Telefone:</strong> ${reg.clientPhone || 'N/A'}</div>
+                        <div><strong>Email:</strong> ${reg.clientEmail || 'N/A'}</div>
+                        <div><strong>Documento:</strong> ${reg.document || 'N/A'}</div>
+                        <div><strong>Ultima atualizacao:</strong> ${new Date(reg.updatedAt || reg.timestamp).toLocaleString('pt-BR')}</div>
+                        ${reg.internalNotes ? `<div><strong>Notas internas:</strong> ${reg.internalNotes}</div>` : ''}
+                    </div>
+                    <div class="registration-timestamp">
+                        <i class="fas fa-clock"></i> Criado em ${new Date(reg.timestamp).toLocaleString('pt-BR')}
+                    </div>
+                    <div class="registration-actions">
+                        <button class="btn btn-sm btn-info" onclick="viewRegistrationDetails('${reg.id}')">
+                            <i class="fas fa-eye"></i> Detalhes
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="editRegistration('${reg.id}')">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        ${reg.status !== 'approved' ? `<button class="btn btn-sm btn-success" onclick="approveRegistrationModal('${reg.id}')">
+                            <i class="fas fa-check"></i> Aprovar
+                        </button>` : ''}
+                        ${reg.status !== 'rejected' ? `<button class="btn btn-sm btn-danger" onclick="rejectRegistrationModal('${reg.id}')">
+                            <i class="fas fa-times"></i> Rejeitar
+                        </button>` : ''}
+                        <button class="btn btn-sm btn-danger" onclick="deleteRegistrationModal('${reg.id}')" style="background: #e57373;">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // INITIALIZE
+        const lastSection = localStorage.getItem(LAST_SECTION_STORAGE_KEY) || 'dashboard';
+        navigateTo(lastSection);
+        setInterval(loadDashboard, 30000);
+    </script>
+
+    <!-- Funções modernas para cadastros -->
+    <script src="admin-attendants.js"></script>
+    <script src="registrations-modern.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+
+

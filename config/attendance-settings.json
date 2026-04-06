@@ -1,0 +1,161 @@
+﻿{
+    "macros":  [
+
+               ],
+    "slaTargets":  {
+                       "firstResponseSeconds":  120,
+                       "queueWaitSeconds":  300
+                   },
+    "defaultMaxConcurrentChats":  1,
+    "sessionReviews":  [
+                           {
+                               "sessionId":  "session-1773106711982-d1mmpen4d",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "contratacao",
+                               "outcome":  "contratou",
+                               "resolved":  true,
+                               "contracted":  true,
+                               "notes":  "[rating:bom] 159",
+                               "createdAt":  1773106859582
+                           },
+                           {
+                               "sessionId":  "session-1773107322885-b8kicmzzi",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182409590@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773107444708
+                           },
+                           {
+                               "sessionId":  "session-1773107424182-f45t03cml",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547297@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773107457589
+                           },
+                           {
+                               "sessionId":  "session-1773108651308-5u5b1swsp",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773108726445
+                           },
+                           {
+                               "sessionId":  "session-1773108702091-yjuhk7tju",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547297@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773108741545
+                           },
+                           {
+                               "sessionId":  "session-1773108742207-yznli3vy9",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182409590@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773108875898
+                           },
+                           {
+                               "sessionId":  "session-1773108859875-1x7jrl93q",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773108885690
+                           },
+                           {
+                               "sessionId":  "session-1773108886348-v9al3w26c",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547297@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1773108904578
+                           },
+                           {
+                               "sessionId":  "session-1775492144364-bngoykjr0",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1775492195536
+                           },
+                           {
+                               "sessionId":  "session-1775493093718-xcff0einy",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "suporte_tecnico",
+                               "outcome":  "parcial",
+                               "resolved":  false,
+                               "contracted":  false,
+                               "notes":  "[rating:regular]",
+                               "createdAt":  1775493164412
+                           },
+                           {
+                               "sessionId":  "session-1775493403331-kg4d6di00",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1775493418147
+                           },
+                           {
+                               "sessionId":  "session-1775493677649-j1eyyyhyb",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1775493694433
+                           },
+                           {
+                               "sessionId":  "session-1775493703603-logk8dtyf",
+                               "attendantId":  "att-1769479820303-s36syk064",
+                               "clientJid":  "557182547726@s.whatsapp.net",
+                               "nature":  "duvida",
+                               "outcome":  "resolvido",
+                               "resolved":  true,
+                               "contracted":  false,
+                               "notes":  "[rating:bom]",
+                               "createdAt":  1775493775520
+                           }
+                       ],
+    "customerMessages":  {
+    "queueEntry":  "Todos os atendentes estao ocupados no momento.\nVoce foi adicionado a fila de atendimento.\nPosicao: {position}\nTempo estimado: {estimatedMinutes} minuto(s).\n{positionMessage}\n\nDigite \"menu\" a qualquer momento para sair da fila.",
+                             "queueNext":  "Voce e o proximo da fila. Um atendente vai assumir seu caso em alguns instantes.",
+                             "queueUpdate":  "Atualizacao da fila: voce esta em {position}o e faltam {remaining} pessoa(s). Tempo estimado: {estimatedMinutes} minuto(s).",
+    "queueStatus":  "Voce continua na fila de atendimento.\nPosicao atual: {position}.\nTempo estimado atual: {estimatedMinutes} minuto(s).\nTempo medio observado: {avgMinutes} minuto(s).\n\nPara sair da fila e voltar ao menu principal, digite: menu"
+                         }
+}

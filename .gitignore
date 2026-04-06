@@ -1,0 +1,9 @@
+node_modules/
+dist/
+auth/
+*.log
+.env
+.DS_Store
+*.pem
+package-lock.json
+chat_history/

@@ -1,0 +1,133 @@
+[
+  {
+    "id": "main",
+    "title": "Menu Principal",
+    "message": "👋 Olá! Eu sou o assistente do Cardápio JK.\n\n🍕 Nosso sistema ajuda pizzarias, lanchonetes, açaíterias e negócios de alimentação a vender melhor com um cardápio digital mais prático e profissional.\n\n🎯 Vou te mostrar o essencial para você decidir sem perder tempo.",
+    "items": [
+      {
+        "id": "jk_overview",
+        "label": "🚀 Como o Cardápio JK ajuda meu negócio",
+        "action": "submenu",
+        "submenuId": "jk_overview"
+      },
+      {
+        "id": "jk_plans",
+        "label": "💰 Ver planos e escolher o ideal",
+        "action": "submenu",
+        "submenuId": "jk_plans"
+      },
+      {
+        "id": "jk_attendant_main",
+        "label": "📞 Falar com um especialista",
+        "action": "attendant",
+        "attendantType": "commercial"
+      }
+    ]
+  },
+  {
+    "id": "jk_overview",
+    "title": "Como o Cardápio JK Ajuda",
+    "message": "📲 O Cardápio JK foi pensado para transformar interesse em pedido, reduzir atendimento confuso e deixar sua operação mais organizada.\n\n✅ O foco aqui é simples: mostrar valor rápido e te levar para a melhor decisão.",
+    "items": [
+      {
+        "id": "jk_how_it_works",
+        "label": "✨ Ver os principais benefícios",
+        "action": "message",
+        "message": "🍕 O Cardápio JK ajuda seu negócio a vender com mais clareza, acelerar o atendimento e reduzir erros no pedido.\n\n✨ O cliente entende melhor o cardápio, escolhe com mais facilidade e sua equipe trabalha com mais organização.\n\nSe fez sentido, o próximo passo ideal é ver o plano mais adequado para sua operação."
+      },
+      {
+        "id": "jk_demo",
+        "label": "👀 Ver demonstração",
+        "action": "message",
+        "message": "🎥 Veja uma demonstração do sistema neste link:\n\nhttps://minhaloja.systemautojk.com.br/1\n\nSe você gostar da experiência, siga para os planos ou fale com um especialista."
+      },
+      {
+        "id": "jk_go_plans_from_overview",
+        "label": "💰 Quero ver os planos",
+        "action": "submenu",
+        "submenuId": "jk_plans"
+      },
+      {
+        "id": "jk_attendant_overview",
+        "label": "📞 Falar com especialista",
+        "action": "attendant",
+        "attendantType": "commercial"
+      }
+    ]
+  },
+  {
+    "id": "jk_plans",
+    "title": "Planos",
+    "message": "💰 Hoje o Cardápio JK segue dois caminhos diretos:\n\n🔹 Básico para quem quer começar rápido.\n⭐ Profissional para quem quer mais estrutura e crescimento.\n\nEscolha o que mais combina com seu momento.",
+    "items": [
+      {
+        "id": "jk_plan_basic",
+        "label": "🔹 Quero conhecer o Plano Básico",
+        "action": "submenu",
+        "submenuId": "jk_plan_basic"
+      },
+      {
+        "id": "jk_plan_professional",
+        "label": "⭐ Quero conhecer o Plano Profissional",
+        "action": "submenu",
+        "submenuId": "jk_plan_professional"
+      },
+      {
+        "id": "jk_attendant_plans",
+        "label": "📞 Quero ajuda para escolher",
+        "action": "attendant",
+        "attendantType": "commercial"
+      }
+    ]
+  },
+  {
+    "id": "jk_plan_basic",
+    "title": "Plano Básico",
+    "message": "🔹 O Plano Básico é indicado para quem quer parar de atender de forma desorganizada e colocar o cardápio digital para rodar com rapidez.\n\n✅ Melhor para começar com clareza, agilidade e menos fricção no atendimento.",
+    "items": [
+      {
+        "id": "jk_plan_basic_details",
+        "label": "📋 Ver resumo do Plano Básico",
+        "action": "message",
+        "message": "📋 Plano Básico\n\n- ideal para quem quer começar rápido\n- organiza o atendimento\n- ajuda a profissionalizar a apresentação do cardápio\n\n✅ Se esse plano faz sentido para seu momento, você já pode iniciar o cadastro."
+      },
+      {
+        "id": "jk_buy_basic",
+        "label": "✅ Quero contratar o Plano Básico",
+        "action": "registration",
+        "registrationPlan": "basic"
+      },
+      {
+        "id": "jk_talk_basic",
+        "label": "📞 Tirar dúvida com especialista",
+        "action": "attendant",
+        "attendantType": "commercial"
+      }
+    ]
+  },
+  {
+    "id": "jk_plan_professional",
+    "title": "Plano Profissional",
+    "message": "⭐ O Plano Profissional é indicado para negócios que querem mais controle, mais estrutura e mais segurança para crescer.\n\n✅ Melhor para operações que querem vender com mais organização e nível profissional.",
+    "items": [
+      {
+        "id": "jk_plan_professional_details",
+        "label": "📋 Ver resumo do Plano Profissional",
+        "action": "message",
+        "message": "🚀 Plano Profissional\n\n- ideal para quem quer mais estrutura\n- melhor para operações que buscam crescimento com controle\n- entrega uma base mais forte para escalar o atendimento\n\n✅ Se esse plano combina com seu negócio, você já pode iniciar o cadastro."
+      },
+      {
+        "id": "jk_buy_professional",
+        "label": "✅ Quero contratar o Plano Profissional",
+        "action": "registration",
+        "registrationPlan": "professional"
+      },
+      {
+        "id": "jk_talk_professional",
+        "label": "📞 Tirar dúvida com especialista",
+        "action": "attendant",
+        "attendantType": "commercial"
+      }
+    ]
+  }
+]

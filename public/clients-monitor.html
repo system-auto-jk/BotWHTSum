@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor de Clientes no Menu - WhatsApp Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            width: 250px;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card.online {
+            border-top: 4px solid #4caf50;
+        }
+
+        .stat-card.in-menu {
+            border-top: 4px solid #2196f3;
+        }
+
+        .stat-card.blocked {
+            border-top: 4px solid #f44336;
+        }
+
+        .stat-card.in-attendance {
+            border-top: 4px solid #ff9800;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .filters-panel {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filters-panel h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 16px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #666;
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-filter {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-apply:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #e0e0e0;
+        }
+
+        .clients-list {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .clients-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clients-header h2 {
+            font-size: 18px;
+        }
+
+        .clients-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .clients-grid {
+            overflow-y: auto;
+            max-height: calc(100vh - 400px);
+        }
+
+        .client-card {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        .client-card:hover {
+            background: #f9f9f9;
+        }
+
+        .client-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .client-info {
+            flex: 1;
+        }
+
+        .client-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .client-jid {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+            font-family: monospace;
+        }
+
+        .client-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+        }
+
+        .meta-label {
+            font-weight: 500;
+            color: #999;
+        }
+
+        .menu-position {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-blocked {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-in-attendance {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-inactive {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .client-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-block {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-block:hover {
+            background: #ef5350;
+            color: white;
+        }
+
+        .btn-intervene {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .btn-intervene:hover {
+            background: #ffb74d;
+            color: white;
+        }
+
+        .btn-reset {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-reset:hover {
+            background: #bdbdbd;
+        }
+
+        .btn-end {
+            background: #ffcdd2;
+            color: #b71c1c;
+        }
+
+        .btn-end:hover {
+            background: #ef5350;
+            color: white;
+        }
+
+        .btn-contact {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .btn-contact:hover {
+            background: #42a5f5;
+            color: white;
+        }
+
+        .btn-more {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-more:hover {
+            background: #e0e0e0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-header h3 {
+            color: #333;
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 24px;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+            padding: 12px 24px;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            animation: slideDown 0.3s;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-left: 4px solid #4caf50;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #f44336;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .no-clients {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-clients-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+
+        .spinner {
+            border: 3px solid #f0f0f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .action-history {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .action-badge {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .action-badge.block {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .action-badge.intervene {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .action-badge.reset {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .whatsapp-link {
+            color: #25d366;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .whatsapp-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <div class="logo">👥</div>
+                Monitor de Clientes no Menu
+            </h1>
+            <div class="header-actions">
+                <input type="text" class="search-box" id="searchInput" placeholder="🔍 Buscar cliente...">
+                <a href="/admin" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 8px; text-decoration: none; font-weight: 600;">← Voltar</a>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-card online">
+                <div class="stat-number" id="statOnline">0</div>
+                <div class="stat-label">Clientes Online</div>
+            </div>
+            <div class="stat-card in-menu">
+                <div class="stat-number" id="statInMenu">0</div>
+                <div class="stat-label">No Menu</div>
+            </div>
+            <div class="stat-card in-attendance">
+                <div class="stat-number" id="statInAttendance">0</div>
+                <div class="stat-label">Em Atendimento</div>
+            </div>
+            <div class="stat-card blocked">
+                <div class="stat-number" id="statBlocked">0</div>
+                <div class="stat-label">Bloqueados</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Filters Panel -->
+            <div class="filters-panel">
+                <h3>🔍 Filtros</h3>
+                
+                <div class="filter-group">
+                    <label>Posição no Menu</label>
+                    <select id="filterMenu">
+                        <option value="">-- Todos os menus --</option>
+                        <option value="main">Menu Principal</option>
+                        <option value="services">Serviços</option>
+                        <option value="pricing">Preços</option>
+                        <option value="faq">Perguntas Frequentes</option>
+                        <option value="contact">Contato</option>
+                        <option value="registration">Registro</option>
+                        <option value="attendance">Em Atendimento</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="filterStatus">
+                        <option value="">-- Todos --</option>
+                        <option value="online">Online</option>
+                        <option value="in-attendance">Em Atendimento</option>
+                        <option value="blocked">Bloqueado</option>
+                        <option value="inactive">Inativo</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Atividade (minutos)</label>
+                    <select id="filterActivity">
+                        <option value="">-- Qualquer tempo --</option>
+                        <option value="1">Últimos 1 minuto</option>
+                        <option value="5">Últimos 5 minutos</option>
+                        <option value="15">Últimos 15 minutos</option>
+                        <option value="30">Últimos 30 minutos</option>
+                        <option value="60">Última 1 hora</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Ordenar por</label>
+                    <select id="filterSort">
+                        <option value="recent">Atividade Recente</option>
+                        <option value="name">Nome (A-Z)</option>
+                        <option value="messages">Mais Mensagens</option>
+                        <option value="duration">Maior Duração</option>
+                    </select>
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="btn-filter btn-apply" onclick="applyFilters()">Aplicar</button>
+                    <button class="btn-filter btn-reset" onclick="resetFilters()">Limpar</button>
+                </div>
+            </div>
+
+            <!-- Clients List -->
+            <div class="clients-list">
+                <div class="clients-header">
+                    <h2>📋 Clientes Ativos</h2>
+                    <span class="clients-count"><span id="clientCount">0</span> clientes</span>
+                </div>
+                <div class="clients-grid" id="clientsList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Carregando clientes...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    
+    <!-- Block User Modal -->
+    <div id="blockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🚫 Bloquear Cliente</h3>
+                <button class="modal-close" onclick="closeModal('blockModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>Cliente:</label>
+                <input type="text" id="blockClientName" readonly style="background: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Motivo do Bloqueio</label>
+                <textarea id="blockReason" placeholder="Digite o motivo do bloqueio..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('blockModal')">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmBlockUser()">Bloquear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Intervene Modal -->
+    <div id="interveneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>👥 Intervir no Atendimento</h3>
+                <button class="modal-close" onclick="closeModal('interveneModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>Cliente:</label>
+                <input type="text" id="interveneClientName" readonly style="background: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Seu Nome</label>
+                <input type="text" id="interveneName" placeholder="Digite seu nome...">
+            </div>
+            <div class="form-group">
+                <label>Mensagem</label>
+                <textarea id="interveneMessage" placeholder="Digite a mensagem para o cliente..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('interveneModal')">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmIntervene()">Intervir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>💬 Entrar em Contato Direto</h3>
+                <button class="modal-close" onclick="closeModal('contactModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>Cliente:</label>
+                <input type="text" id="contactClientName" readonly style="background: #f5f5f5;">
+            </div>
+            <div class="form-group">
+                <label>Seu Nome</label>
+                <input type="text" id="contactName" placeholder="Digite seu nome...">
+            </div>
+            <div class="form-group">
+                <label>Mensagem</label>
+                <textarea id="contactMessage" placeholder="Digite a mensagem para enviar ao cliente..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('contactModal')">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmContact()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Session Modal -->
+    <div id="resetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔄 Resetar Atendimento</h3>
+                <button class="modal-close" onclick="closeModal('resetModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>Cliente:</label>
+                <input type="text" id="resetClientName" readonly style="background: #f5f5f5;">
+            </div>
+            <p style="color: #666; font-size: 14px;">Você deseja resetar o atendimento deste cliente? Ele retornará ao menu principal.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('resetModal')">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmReset()">Resetar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- End Session Modal -->
+    <div id="endModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⏹️ Finalizar Atendimento</h3>
+                <button class="modal-close" onclick="closeModal('endModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label>Cliente:</label>
+                <input type="text" id="endClientName" readonly style="background: #f5f5f5;">
+            </div>
+            <p style="color: #666; font-size: 14px;">Você deseja finalizar o atendimento deste cliente?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('endModal')">Cancelar</button>
+                <button class="btn-confirm" onclick="confirmEndSession()">Finalizar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- More Actions Modal -->
+    <div id="moreActionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⋮ Mais Ações</h3>
+                <button class="modal-close" onclick="closeModal('moreActionsModal')">×</button>
+            </div>
+            <div style="padding: 20px 0;">
+                <h4 style="color: #333; margin-bottom: 15px; font-size: 14px;">
+                    <span id="moreActionsClientName"></span>
+                </h4>
+                
+                <div style="margin-bottom: 20px;">
+                    <h5 style="color: #666; font-size: 12px; margin-bottom: 10px;">Histórico de Ações</h5>
+                    <div id="actionHistoryContainer" style="background: #f9f9f9; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                        Nenhuma ação registrada
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <h5 style="color: #666; font-size: 12px; margin-bottom: 10px;">Informações do Usuário</h5>
+                    <div id="userInfoContainer" style="background: #f9f9f9; padding: 15px; border-radius: 8px; font-size: 12px;">
+                        <div style="margin-bottom: 8px;">
+                            <strong>WhatsApp:</strong>
+                            <a href="javascript:void(0)" class="whatsapp-link" id="whatsappLink">
+                                🟢 Abrir Chat
+                            </a>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>JID:</strong> <span id="userJid" style="font-family: monospace;"></span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Menu Atual:</strong> <span id="userMenu"></span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Sessão:</strong> <span id="userDuration"></span>
+                        </div>
+                        <div style="margin-bottom: 8px;">
+                            <strong>Mensagens:</strong> <span id="userMessages"></span>
+                        </div>
+                        <div>
+                            <strong>Status:</strong> <span id="userStatus"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('moreActionsModal')">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        let currentClients = [];
+        let selectedClientJid = null;
+
+        // Load clients on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadClients();
+            setInterval(loadClients, 5000); // Refresh every 5 seconds
+
+            // Search filter
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                filterClientsList();
+            });
+        });
+
+        async function loadClients() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/online-users`);
+                const data = await response.json();
+                currentClients = data.users || [];
+                
+                updateStats();
+                renderClients(currentClients);
+            } catch (error) {
+                console.error('Erro ao carregar clientes:', error);
+                showAlert('Erro ao carregar clientes', 'error');
+            }
+        }
+
+        function updateStats() {
+            const now = Date.now();
+            const onlineCount = currentClients.length;
+            const inMenuCount = currentClients.filter(c => !c.isInAttendance).length;
+            const inAttendanceCount = currentClients.filter(c => c.isInAttendance).length;
+            const blockedCount = currentClients.filter(c => c.isBlocked).length;
+
+            document.getElementById('statOnline').textContent = onlineCount;
+            document.getElementById('statInMenu').textContent = inMenuCount;
+            document.getElementById('statInAttendance').textContent = inAttendanceCount;
+            document.getElementById('statBlocked').textContent = blockedCount;
+        }
+
+        function renderClients(clients) {
+            const clientsList = document.getElementById('clientsList');
+            
+            if (clients.length === 0) {
+                clientsList.innerHTML = `
+                    <div class="no-clients">
+                        <div class="no-clients-icon">👥</div>
+                        <p>Nenhum cliente online no momento</p>
+                    </div>
+                `;
+                document.getElementById('clientCount').textContent = '0';
+                return;
+            }
+
+            document.getElementById('clientCount').textContent = clients.length;
+
+            clientsList.innerHTML = clients.map(client => {
+                const lastActivityDate = new Date(client.lastActivity);
+                const durationMs = Date.now() - (client.lastActivity - client.sessionDuration);
+                const durationMinutes = Math.floor(durationMs / 60000);
+
+                let statusClass = 'status-online';
+                let statusText = '🟢 Online';
+                if (client.isBlocked) {
+                    statusClass = 'status-blocked';
+                    statusText = '🚫 Bloqueado';
+                } else if (client.isInAttendance) {
+                    statusClass = 'status-in-attendance';
+                    statusText = '🟠 Em Atendimento';
+                }
+
+                return `
+                    <div class="client-card">
+                        <div class="client-header">
+                            <div class="client-info">
+                                <div class="client-name">${client.name}</div>
+                                <div class="client-jid">${client.jid}</div>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+
+                        <div class="client-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">📍 Posição:</span>
+                                <span class="menu-position">${client.currentStep || 'Menu Principal'}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">⏱️ Duração:</span>
+                                <span>${durationMinutes} min</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">💬 Mensagens:</span>
+                                <span>${client.messagesReceived || 0}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">🕐 Última atividade:</span>
+                                <span>${lastActivityDate.toLocaleTimeString('pt-BR')}</span>
+                            </div>
+                        </div>
+
+                        <div class="client-actions">
+                            <button class="btn-block" onclick="openBlockModal('${client.jid}', '${client.name}')">
+                                🚫 Bloquear
+                            </button>
+                            <button class="btn-intervene" onclick="openInterveneModal('${client.jid}', '${client.name}')">
+                                👥 Intervir
+                            </button>
+                            <button class="btn-reset" onclick="openResetModal('${client.jid}', '${client.name}')">
+                                🔄 Resetar
+                            </button>
+                            <button class="btn-end" onclick="openEndModal('${client.jid}', '${client.name}')">
+                                ⏹️ Finalizar
+                            </button>
+                            <button class="btn-contact" onclick="openContactModal('${client.jid}', '${client.name}')">
+                                💬 Contato
+                            </button>
+                            <button class="btn-more" onclick="openMoreActions('${client.jid}', '${client.name}')">
+                                ⋮ Mais
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterClientsList() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = currentClients.filter(c => 
+                c.name.toLowerCase().includes(searchTerm) || 
+                c.jid.toLowerCase().includes(searchTerm)
+            );
+            renderClients(filtered);
+        }
+
+        function applyFilters() {
+            let filtered = [...currentClients];
+
+            const menuFilter = document.getElementById('filterMenu').value;
+            if (menuFilter) {
+                filtered = filtered.filter(c => c.currentMenu === menuFilter);
+            }
+
+            const statusFilter = document.getElementById('filterStatus').value;
+            if (statusFilter === 'online') {
+                filtered = filtered.filter(c => !c.isBlocked && !c.isInAttendance);
+            } else if (statusFilter === 'in-attendance') {
+                filtered = filtered.filter(c => c.isInAttendance);
+            } else if (statusFilter === 'blocked') {
+                filtered = filtered.filter(c => c.isBlocked);
+            }
+
+            const activityFilter = parseInt(document.getElementById('filterActivity').value);
+            if (activityFilter) {
+                const now = Date.now();
+                const threshold = activityFilter * 60 * 1000;
+                filtered = filtered.filter(c => now - c.lastActivity <= threshold);
+            }
+
+            const sortFilter = document.getElementById('filterSort').value;
+            if (sortFilter === 'name') {
+                filtered.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortFilter === 'messages') {
+                filtered.sort((a, b) => (b.messagesReceived || 0) - (a.messagesReceived || 0));
+            } else if (sortFilter === 'duration') {
+                filtered.sort((a, b) => b.sessionDuration - a.sessionDuration);
+            } else {
+                filtered.sort((a, b) => b.lastActivity - a.lastActivity);
+            }
+
+            renderClients(filtered);
+            showAlert(`${filtered.length} cliente(s) encontrado(s)`, 'info');
+        }
+
+        function resetFilters() {
+            document.getElementById('filterMenu').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterActivity').value = '';
+            document.getElementById('filterSort').value = 'recent';
+            document.getElementById('searchInput').value = '';
+            renderClients(currentClients);
+            showAlert('Filtros limpos', 'info');
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        function openBlockModal(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('blockClientName').value = name;
+            document.getElementById('blockReason').value = '';
+            openModal('blockModal');
+        }
+
+        async function confirmBlockUser() {
+            const reason = document.getElementById('blockReason').value;
+            
+            if (!reason.trim()) {
+                showAlert('Digite um motivo para o bloqueio', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/block-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedClientJid,
+                        adminId: 'admin-' + Date.now(),
+                        reason: reason
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Cliente bloqueado com sucesso', 'success');
+                    closeModal('blockModal');
+                    loadClients();
+                } else {
+                    showAlert(result.error || 'Erro ao bloquear cliente', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao processar ação', 'error');
+                console.error(error);
+            }
+        }
+
+        function openInterveneModal(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('interveneClientName').value = name;
+            document.getElementById('interveneName').value = '';
+            document.getElementById('interveneMessage').value = '';
+            openModal('interveneModal');
+        }
+
+        async function confirmIntervene() {
+            const adminName = document.getElementById('interveneName').value;
+
+            if (!adminName.trim()) {
+                showAlert('Digite seu nome', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/intervene-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedClientJid,
+                        adminId: 'admin-' + Date.now(),
+                        adminName: adminName
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Intervenção iniciada com sucesso', 'success');
+                    closeModal('interveneModal');
+                    loadClients();
+                } else {
+                    showAlert(result.error || 'Erro ao intervir', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao processar ação', 'error');
+                console.error(error);
+            }
+        }
+
+        function openContactModal(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('contactClientName').value = name;
+            document.getElementById('contactName').value = '';
+            document.getElementById('contactMessage').value = '';
+            openModal('contactModal');
+        }
+
+        async function confirmContact() {
+            const adminName = document.getElementById('contactName').value;
+            const message = document.getElementById('contactMessage').value;
+
+            if (!adminName.trim() || !message.trim()) {
+                showAlert('Preencha seu nome e a mensagem', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/monitor/contact-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedClientJid,
+                        adminId: 'admin-' + Date.now(),
+                        adminName: adminName,
+                        message: message
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Mensagem enviada com sucesso', 'success');
+                    closeModal('contactModal');
+                    loadClients();
+                } else {
+                    showAlert(result.error || 'Erro ao enviar mensagem', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao processar ação', 'error');
+                console.error(error);
+            }
+        }
+
+        function openResetModal(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('resetClientName').value = name;
+            openModal('resetModal');
+        }
+
+        async function confirmReset() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/reset-session`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedClientJid,
+                        adminId: 'admin-' + Date.now()
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Atendimento resetado com sucesso', 'success');
+                    closeModal('resetModal');
+                    loadClients();
+                } else {
+                    showAlert(result.error || 'Erro ao resetar', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao processar ação', 'error');
+                console.error(error);
+            }
+        }
+
+        function openEndModal(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('endClientName').value = name;
+            openModal('endModal');
+        }
+
+        async function confirmEndSession() {
+            try {
+                const response = await fetch(`${API_BASE}/monitor/kick-user`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        jid: selectedClientJid,
+                        adminId: 'admin-' + Date.now(),
+                        reason: 'Finalizado pelo administrador'
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showAlert('Atendimento finalizado com sucesso', 'success');
+                    closeModal('endModal');
+                    loadClients();
+                } else {
+                    showAlert(result.error || 'Erro ao finalizar', 'error');
+                }
+            } catch (error) {
+                showAlert('Erro ao processar ação', 'error');
+                console.error(error);
+            }
+        }
+
+        async function openMoreActions(jid, name) {
+            selectedClientJid = jid;
+            document.getElementById('moreActionsClientName').textContent = name;
+            
+            // Extract phone number from JID
+            const phoneNumber = jid.split('@')[0];
+            document.getElementById('whatsappLink').href = `https://wa.me/${phoneNumber}`;
+            
+            // Load user details
+            try {
+                const response = await fetch(`${API_BASE}/monitor/user/${jid}`);
+                const data = await response.json();
+                const user = data.user;
+
+                document.getElementById('userJid').textContent = user.jid;
+                document.getElementById('userMenu').textContent = user.currentStep || user.currentMenu;
+                
+                const durationMinutes = Math.floor((Date.now() - (user.lastActivity - user.sessionDuration)) / 60000);
+                document.getElementById('userDuration').textContent = `${durationMinutes} minutos`;
+                document.getElementById('userMessages').textContent = `${user.messagesReceived || 0} recebidas, ${user.messagesSent || 0} enviadas`;
+                
+                let statusText = '🟢 Online';
+                if (user.isBlocked) {
+                    statusText = '🚫 Bloqueado';
+                } else if (user.isInAttendance) {
+                    statusText = '🟠 Em Atendimento';
+                }
+                document.getElementById('userStatus').textContent = statusText;
+
+                // Load action history
+                const actionsResponse = await fetch(`${API_BASE}/monitor/user/${jid}/actions`);
+                const actionsData = await actionsResponse.json();
+                const actions = actionsData.actions || [];
+
+                const historyContainer = document.getElementById('actionHistoryContainer');
+                if (actions.length === 0) {
+                    historyContainer.innerHTML = 'Nenhuma ação registrada';
+                } else {
+                    historyContainer.innerHTML = actions.reverse().map(action => {
+                        const date = new Date(action.timestamp).toLocaleString('pt-BR');
+                        const actionEmoji = {
+                            'block': '🚫',
+                            'intervene': '👥',
+                            'reset': '🔄',
+                            'contact': '💬',
+                            'kick': '❌'
+                        }[action.action] || '⚙️';
+
+                        return `
+                            <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;">
+                                <div style="font-weight: 500; color: #333;">${actionEmoji} ${action.action.charAt(0).toUpperCase() + action.action.slice(1)}</div>
+                                <div style="font-size: 11px; color: #999; margin: 5px 0;">
+                                    Por: ${action.performedBy} | ${date}
+                                </div>
+                                ${action.reason ? `<div style="font-size: 12px; color: #666;">Motivo: ${action.reason}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+            }
+
+            openModal('moreActionsModal');
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} show`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => alert.remove(), 3000);
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

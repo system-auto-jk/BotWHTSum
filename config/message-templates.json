@@ -1,0 +1,19 @@
+{
+  "templates": {
+    "botDisabledByAdmin": "BOT DESATIVADO COM SUCESSO!\n\nO bot nao respondera ate ser reativado.\n\nUse !startbot para ativar novamente.",
+    "botAlreadyDisabled": "O bot ja esta desativado.",
+    "botEnabledByAdmin": "BOT ATIVADO COM SUCESSO!\n\nO bot esta operacional novamente e respondendo normalmente.",
+    "botAlreadyEnabled": "O bot ja esta ativado.",
+    "genericRequestError": "Houve um erro ao processar sua solicitacao. Tente novamente mais tarde.",
+    "genericRequestErrorShort": "Houve um erro ao processar sua solicitacao. Tente novamente.",
+    "humanConnectedDefault": "Voce foi conectado a {attendantName}, nosso especialista. \nEm breve respondera sua mensagem!",
+    "humanConnectedFromRegistration": "Voce foi conectado ao atendente {attendantName}. Aguarde a resposta.",
+    "humanForwardingNamed": "Perfeito! Seu atendimento esta sendo transferido para {attendantName}.",
+    "queueExitToMenu": "Voce saiu da fila de atendimento e voltou ao menu principal.",
+    "attendanceEndedByClient": "Atendimento finalizado. Voltando ao menu principal...",
+    "attendanceEndedDefault": "Atendimento finalizado. O bot foi reativado para responder automaticamente.",
+    "queueRemovedByAdmin": "Voce foi removido da fila de espera.",
+    "queueAssignedByAttendant": "Seu atendimento foi iniciado com {attendantName}.",
+    "queueAssignedPullNext": "Voce saiu da fila e seu atendimento foi iniciado com {attendantName}."
+  }
+}
